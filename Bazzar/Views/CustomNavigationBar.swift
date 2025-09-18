@@ -12,84 +12,41 @@ struct CustomNavigationBarView: View {
     @State var selectedTab: Tab
     @State private var goToProfile = false
     @State private var goToNotification = false
+    @StateObject private var searchViewModel = SearchViewModel()
+    
     @Query var user: [User]
     var body: some View {
-        HStack {
-            switch selectedTab {
-            case .home:
+        HStack(spacing: 12) {
+            // Search Bar 80%
+            HStack {
+                Image(systemName: "magnifyingglass")
+                    .foregroundColor(.gray)
+                    .padding(.leading, 8)
                 
-                // Left Icon
-                Button(action: {
-                    goToProfile = true
-                }) {
-                    Image("girlPhoto")
-                        .resizable()
-                        .scaledToFill()
-                        .frame(width: 50, height: 50)
-                        .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
-                }
-                .buttonStyle(PlainButtonStyle())
-                
-                
-                
-                // Center Text
-                VStack(alignment: .leading, spacing: 2) {
-                    Text("Hello Allex")
-                        .font(.callout)
-                        .fontWeight(.medium)
-                    Text("Good Morning")
-                        .font(.headline)
-                        .fontWeight(.bold)
-                }
-               
-
-                Spacer()
-
-         
-            case .categories:
-                Text("Categories")
-                    .font(.largeTitle)
-                    .fontWeight(.semibold)
-            case .cart:
-                Text("Cart")
-                    .font(.largeTitle)
-                    .fontWeight(.semibold)
-            case .account:
-                Text("Account")
-                    .font(.largeTitle)
-                    .fontWeight(.semibold)
+                TextField("Search", text: $searchViewModel.searchText)
+                    .font(.subheadline)
+                    .padding(8)
             }
+            .frame(maxWidth: .infinity, maxHeight: 40)
+            .background(Color.gray.opacity(0.2))
+            .cornerRadius(10)
             
-           
-            // Right Buttons
-            HStack(spacing: 12) {
-                Button {
-                    print("Bell pressed")
-                } label: {
-                    Image(systemName: "bell.fill")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 25, height: 25)
-                        .padding(8)
-                        .background(Color.gray.opacity(0.2))
-                        .cornerRadius(8)
-                }
-
-                Button {
-                    print("Ellipsis pressed")
-                } label: {
-                    Image(systemName: "ellipsis")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 25, height: 25)
-                        .padding(8)
-                        .background(Color.gray.opacity(0.2))
-                        .cornerRadius(8)
-                }
+            // Button 20%
+            Button {
+                print("Button pressed")
+            } label: {
+                Image(systemName: "bell.fill")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 25, height: 25)
+                    .padding(8)
+                    .foregroundColor(.orange)
+                    .background(Color.gray.opacity(0.2))
+                    .cornerRadius(10)
             }
             
         }
-        .frame(height: 60)
+        .frame(height: 40)
         
         
         // Attach Screens

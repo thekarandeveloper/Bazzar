@@ -12,7 +12,9 @@ struct ProfileView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 30) {
-                
+                // Navbar
+                CustomNavigationBarView(selectedTab: .home)
+               
                 // Header Banner
                 ZStack(alignment: .bottom) {
                     LinearGradient(colors: [Color.orange.opacity(0.8), Color.orange.opacity(0.5)],

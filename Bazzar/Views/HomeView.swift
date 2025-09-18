@@ -9,7 +9,6 @@ import SwiftUI
 
 struct HomeView: View{
     
-    @StateObject private var searchViewModel = SearchViewModel()
     
     let columns = [
         GridItem(.flexible()),
@@ -17,47 +16,15 @@ struct HomeView: View{
     ]
     
     var body: some View{
+        // Navbar
+        CustomNavigationBarView(selectedTab: .home)
+        .frame(height: 40)
+        
         ScrollView(.vertical, showsIndicators: false){
             
             VStack(spacing: 20){
                 
-                // Navbar
-                CustomNavigationBarView(selectedTab: .home)
-                
-                // Search Bar
-                
-                HStack(spacing: 12) {
-                    // Search Bar 80%
-                    HStack {
-                        Image(systemName: "magnifyingglass")
-                            .foregroundColor(.gray)
-                            .padding(.leading, 8)
-                        
-                        TextField("Search", text: $searchViewModel.searchText)
-                            .font(.subheadline)
-                            .padding(8)
-                    }
-                    .frame(maxWidth: .infinity, maxHeight: 40)
-                    .background(Color.gray.opacity(0.2))
-                    .cornerRadius(10)
-                    
-                    // Button 20%
-                    Button {
-                        print("Button pressed")
-                    } label: {
-                        Image(systemName: "gearshape.fill")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 25, height: 25)
-                            .padding(8)
-                            .foregroundColor(.orange)
-                            .background(Color.gray.opacity(0.2))
-                            .cornerRadius(10)
-                    }
-                    
-                }
-                .frame(height: 40)
-                
+              
                 // Categories Selection
                 
                 HStack{
