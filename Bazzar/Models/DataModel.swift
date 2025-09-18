@@ -50,3 +50,17 @@ class User:FirestoreModel, Identifiable, Codable {
 
   
 }
+
+
+struct Product: Identifiable, Codable {
+    @DocumentID var id: String?  // For Firebase
+    var name: String
+    var category: String
+    var price: Double
+    var oldPrice: Double
+    var imageUrl: String
+    
+    // Optional fields for app-local state
+    var isInCart: Bool = false
+    var isInWishlist: Bool = false
+}

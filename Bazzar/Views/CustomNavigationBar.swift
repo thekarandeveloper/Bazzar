@@ -16,6 +16,7 @@ struct CustomNavigationBarView: View {
     
     @Query var user: [User]
     var body: some View {
+      
         HStack(spacing: 12) {
             // Search Bar 80%
             HStack {

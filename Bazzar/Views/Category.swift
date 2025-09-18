@@ -27,15 +27,15 @@ struct CategoryView: View {
     var body: some View {
         CustomNavigationBarView(selectedTab: .home)
         ScrollView {
-            LazyVGrid(columns: columns, spacing: 20) {
-                ForEach(categories, id: \.0) { category in
-                    NavigationLink(destination: CategoryDetailView(categoryName: "Men")) {
-                        CategoryCardView(name: category.0, imageName: category.1)
-                    }
-                    .buttonStyle(PlainButtonStyle())
-                }
-            }
-            .padding()
+//            LazyVGrid(columns: columns, spacing: 20) {
+//                ForEach(categories, id: \.0) { category in
+//                    NavigationLink(destination: CategoryDetailView(categoryName: "Men")) {
+//                        CategoryCardView(name: category.0, imageName: category.1)
+//                    }
+//                    .buttonStyle(PlainButtonStyle())
+//                }
+//            }
+//            .padding()
         }
         .navigationTitle("Categories")
     }

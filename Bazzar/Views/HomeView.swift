@@ -16,14 +16,12 @@ struct HomeView: View{
     ]
     
     var body: some View{
-        
-        
-        // Navbar
-        CustomNavigationBarView(selectedTab: .home)
-        
+       
         ScrollView(.vertical, showsIndicators: false){
             
-         
+            // Navbar
+            CustomNavigationBarView(selectedTab: .home)
+            
             VStack(spacing: 20){
                 
                 // Categories Selection
@@ -73,10 +71,10 @@ struct HomeView: View{
                 
                 ZStack(alignment: .bottomLeading) {
                           // Background image
-                          Image("bannerPhoto") // replace with your banner image
+                          Image("bannerPhoto") 
                               .resizable()
                               .scaledToFill()
-                              .frame(height: 250)
+                              .frame(height: 250, )
                               .clipped()
                               .cornerRadius(12)
                           
@@ -103,7 +101,7 @@ struct HomeView: View{
                       }
                       .frame(height: 250)
                       .shadow(radius: 3)
-                      .padding(.horizontal)
+                     
                   }
                 
                 
@@ -118,11 +116,11 @@ struct HomeView: View{
                         .font(.caption)
                 }
                 LazyVGrid(columns: columns, spacing: 20) {
-                    ForEach(0..<10, id: \.self) { index in
+                    ForEach(DataManager.shared.products) { product in
                         NavigationLink(destination: ProductView()) {
-                            ProductCardView()
+                            ProductCardView(product: product)
                         }
-                        .buttonStyle(PlainButtonStyle()) // removes default nav highlight
+                        .buttonStyle(PlainButtonStyle())
                     }
                     .frame(width: 160, height: 200)
                 }
@@ -134,9 +132,12 @@ struct HomeView: View{
         
     }
     struct ProductCardView: View {
+        
+        var product: Product
+        
         var body: some View {
             VStack(spacing: 12) {
-                Image("girlPhoto")
+                Image("\(product.imageUrl)")
                     .resizable()
                     .scaledToFill()
                     .frame(width: 160, height: 150)
@@ -145,13 +146,13 @@ struct HomeView: View{
                 
                 HStack {
                     VStack(alignment: .leading) {
-                        Text("Cotton T-shirt")
+                        Text("\(product.name)")
                             .font(.headline)
                         HStack(spacing: 6) {
-                            Text("$69.00")
+                            Text("\(product.price)")
                                 .font(.caption)
                                 .foregroundColor(.orange)
-                            Text("$169.00")
+                            Text("\(product.oldPrice)")
                                 .font(.caption2)
                                 .strikethrough()
                                 .foregroundColor(.gray)
@@ -161,12 +162,13 @@ struct HomeView: View{
                     Button {
                         print("Bell pressed")
                     } label: {
-                        Image(systemName: "bell.fill")
+                        Image(systemName: "cart.fill")
                             .resizable()
                             .scaledToFit()
                             .frame(width: 15, height: 15)
                             .padding(8)
-                            .background(Color.gray.opacity(0.2))
+                            .background(Color.orange)
+                            .foregroundStyle(Color.white)
                             .cornerRadius(8)
                     }
                 }
