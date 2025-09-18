@@ -6,6 +6,13 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		CD4B28342E7C03AC0014D3B1 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = CD4B28332E7C03AC0014D3B1 /* FirebaseAuth */; };
+		CD4B28362E7C03AC0014D3B1 /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = CD4B28352E7C03AC0014D3B1 /* FirebaseDatabase */; };
+		CD4B28382E7C03AC0014D3B1 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = CD4B28372E7C03AC0014D3B1 /* FirebaseFirestore */; };
+		CD4B283A2E7C03AC0014D3B1 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = CD4B28392E7C03AC0014D3B1 /* FirebaseStorage */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		CD4B28162E7C00BB0014D3B1 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -52,6 +59,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CD4B28362E7C03AC0014D3B1 /* FirebaseDatabase in Frameworks */,
+				CD4B283A2E7C03AC0014D3B1 /* FirebaseStorage in Frameworks */,
+				CD4B28342E7C03AC0014D3B1 /* FirebaseAuth in Frameworks */,
+				CD4B28382E7C03AC0014D3B1 /* FirebaseFirestore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -112,6 +123,10 @@
 			);
 			name = Bazzar;
 			packageProductDependencies = (
+				CD4B28332E7C03AC0014D3B1 /* FirebaseAuth */,
+				CD4B28352E7C03AC0014D3B1 /* FirebaseDatabase */,
+				CD4B28372E7C03AC0014D3B1 /* FirebaseFirestore */,
+				CD4B28392E7C03AC0014D3B1 /* FirebaseStorage */,
 			);
 			productName = Bazzar;
 			productReference = CD4B28082E7C00B90014D3B1 /* Bazzar.app */;
@@ -195,6 +210,9 @@
 			);
 			mainGroup = CD4B27FF2E7C00B90014D3B1;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				CD4B28322E7C03AC0014D3B1 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = CD4B28092E7C00B90014D3B1 /* Products */;
 			projectDirPath = "";
@@ -403,8 +421,8 @@
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -431,8 +449,8 @@
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -558,6 +576,40 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		CD4B28322E7C03AC0014D3B1 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 12.3.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		CD4B28332E7C03AC0014D3B1 /* FirebaseAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CD4B28322E7C03AC0014D3B1 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAuth;
+		};
+		CD4B28352E7C03AC0014D3B1 /* FirebaseDatabase */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CD4B28322E7C03AC0014D3B1 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseDatabase;
+		};
+		CD4B28372E7C03AC0014D3B1 /* FirebaseFirestore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CD4B28322E7C03AC0014D3B1 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseFirestore;
+		};
+		CD4B28392E7C03AC0014D3B1 /* FirebaseStorage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CD4B28322E7C03AC0014D3B1 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseStorage;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = CD4B28002E7C00B90014D3B1 /* Project object */;
 }

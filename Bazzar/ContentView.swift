@@ -4,18 +4,36 @@
 //
 //  Created by Karan Kumar on 18/09/25.
 //
-
 import SwiftUI
 
 struct ContentView: View {
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        TabView {
+            
+            // Home Tab
+            NavigationStack {
+                HomeView()
+            }
+            .tabItem {
+                Label("Home", systemImage: "house")
+            }
+
+            // WishList
+            NavigationStack {
+                WishListView()
+            }
+            .tabItem {
+                Label("WishList", systemImage: "magnifyingglass")
+            }
+
+            // Profile Tab
+            NavigationStack {
+                ProfileView()
+            }
+            .tabItem {
+                Label("Profile", systemImage: "star")
+            }
         }
-        .padding()
     }
 }
 
