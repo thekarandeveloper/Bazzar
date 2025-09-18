@@ -105,7 +105,7 @@ struct HomeView: View{
                             .scaledToFit()
                             .frame(width: 25, height: 25)
                             .padding(8)
-                            .foregroundColor(.blue)
+                            .foregroundColor(.orange)
                             .background(Color.gray.opacity(0.2))
                             .cornerRadius(10)
                     }

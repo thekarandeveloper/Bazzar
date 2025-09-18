@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		CD3C836F2E7C35CE004B2DC6 /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = CD3C836E2E7C35CE004B2DC6 /* GoogleSignIn */; };
+		CD3C83712E7C35CE004B2DC6 /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = CD3C83702E7C35CE004B2DC6 /* GoogleSignInSwift */; };
 		CD4B28342E7C03AC0014D3B1 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = CD4B28332E7C03AC0014D3B1 /* FirebaseAuth */; };
 		CD4B28362E7C03AC0014D3B1 /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = CD4B28352E7C03AC0014D3B1 /* FirebaseDatabase */; };
 		CD4B28382E7C03AC0014D3B1 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = CD4B28372E7C03AC0014D3B1 /* FirebaseFirestore */; };
@@ -36,9 +38,22 @@
 		CD4B281F2E7C00BB0014D3B1 /* BazzarUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BazzarUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		CDFA81C92E7C36F6003EB0C1 /* Exceptions for "Bazzar" folder in "Bazzar" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = CD4B28072E7C00B90014D3B1 /* Bazzar */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		CD4B280A2E7C00B90014D3B1 /* Bazzar */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				CDFA81C92E7C36F6003EB0C1 /* Exceptions for "Bazzar" folder in "Bazzar" target */,
+			);
 			path = Bazzar;
 			sourceTree = "<group>";
 		};
@@ -59,8 +74,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CD3C836F2E7C35CE004B2DC6 /* GoogleSignIn in Frameworks */,
 				CD4B28362E7C03AC0014D3B1 /* FirebaseDatabase in Frameworks */,
 				CD4B283A2E7C03AC0014D3B1 /* FirebaseStorage in Frameworks */,
+				CD3C83712E7C35CE004B2DC6 /* GoogleSignInSwift in Frameworks */,
 				CD4B28342E7C03AC0014D3B1 /* FirebaseAuth in Frameworks */,
 				CD4B28382E7C03AC0014D3B1 /* FirebaseFirestore in Frameworks */,
 			);
@@ -127,6 +144,8 @@
 				CD4B28352E7C03AC0014D3B1 /* FirebaseDatabase */,
 				CD4B28372E7C03AC0014D3B1 /* FirebaseFirestore */,
 				CD4B28392E7C03AC0014D3B1 /* FirebaseStorage */,
+				CD3C836E2E7C35CE004B2DC6 /* GoogleSignIn */,
+				CD3C83702E7C35CE004B2DC6 /* GoogleSignInSwift */,
 			);
 			productName = Bazzar;
 			productReference = CD4B28082E7C00B90014D3B1 /* Bazzar.app */;
@@ -212,6 +231,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				CD4B28322E7C03AC0014D3B1 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				CD3C836D2E7C35CE004B2DC6 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = CD4B28092E7C00B90014D3B1 /* Products */;
@@ -418,6 +438,7 @@
 				DEVELOPMENT_TEAM = BA5S8NQVUG;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Bazzar/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -446,6 +467,7 @@
 				DEVELOPMENT_TEAM = BA5S8NQVUG;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Bazzar/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -578,6 +600,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		CD3C836D2E7C35CE004B2DC6 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/google/GoogleSignIn-iOS";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 7.0.0;
+			};
+		};
 		CD4B28322E7C03AC0014D3B1 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/firebase/firebase-ios-sdk.git";
@@ -589,6 +619,16 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		CD3C836E2E7C35CE004B2DC6 /* GoogleSignIn */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CD3C836D2E7C35CE004B2DC6 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
+			productName = GoogleSignIn;
+		};
+		CD3C83702E7C35CE004B2DC6 /* GoogleSignInSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CD3C836D2E7C35CE004B2DC6 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
+			productName = GoogleSignInSwift;
+		};
 		CD4B28332E7C03AC0014D3B1 /* FirebaseAuth */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = CD4B28322E7C03AC0014D3B1 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;

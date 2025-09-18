@@ -7,37 +7,38 @@
 
 
 import SwiftUI
-
+import SwiftData
 struct ContentView: View {
     
-//    @State var searchtext: String
-    
+    @State private var selectedTab: Tab = .home
+    @State private var showAddScreen = false
+    @Environment(\.modelContext) private var context
+   
     var body: some View {
-        TabView {
+        
+        ZStack(alignment: .bottom){
             
-            // Home Tab
-            NavigationStack {
-                HomeView()
+            
+          
+            // Content of selected tab
+            
+            Group {
+                switch selectedTab {
+                case .home:
+                    NavigationStack{HomeView()}
+                case .categories:
+                    NavigationStack{CategoryView()}
+                case .cart:
+                    NavigationStack{CartView()}
+                case .account:
+                    NavigationStack{ProfileView()}
+                }
             }
-            .tabItem {
-                Label("Home", systemImage: "house")
-            }
-
-            // WishList
-            NavigationStack {
-                WishListView()
-            }
-            .tabItem {
-                Label("WishList", systemImage: "magnifyingglass")
-            }
-
-            // Profile Tab
-            NavigationStack {
-                ProfileView()
-            }
-            .tabItem {
-                Label("Profile", systemImage: "star")
-            }
+            CustomTabbar(selectedTab: $selectedTab)
+           
+           
         }
     }
 }
+
+
