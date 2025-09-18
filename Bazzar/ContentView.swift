@@ -12,6 +12,7 @@ struct ContentView: View {
     
     @State private var selectedTab: Tab = .home
     @State private var showAddScreen = false
+    
     @Environment(\.modelContext) private var context
    
     var body: some View {

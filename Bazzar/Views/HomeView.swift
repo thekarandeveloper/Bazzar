@@ -9,10 +9,10 @@ import SwiftUI
 
 struct HomeView: View{
 
-//    @Binding var searchtext: String
+    @StateObject private var searchViewModel = SearchViewModel()
     
     var body: some View{
-        ScrollView(.vertical){
+        ScrollView(.vertical, showsIndicators: false){
             
             VStack(spacing: 20){
                
@@ -24,15 +24,13 @@ struct HomeView: View{
                 HStack(spacing: 12) {
                     // Search Bar 80%
                     HStack {
-                        Image(systemName: "magni")
-                            .resizable()
-                            .frame(width: 15, height: 15)
+                        Image(systemName: "magnifyingglass")
+                            .foregroundColor(.gray)
                             .padding(.leading, 8)
-
-                        Text("Search")
-                            .font(.caption)
-
-                      Spacer()
+                        
+                        TextField("Search", text: $searchViewModel.searchText)
+                            .font(.subheadline)
+                            .padding(8)
                     }
                     .frame(maxWidth: .infinity, maxHeight: 40)
                     .background(Color.gray.opacity(0.2))
@@ -158,8 +156,4 @@ struct HomeView: View{
            
         }
     }
-}
-
-#Preview {
-    HomeView() // provide constant binding
 }
