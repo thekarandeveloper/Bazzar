@@ -8,17 +8,22 @@
 import SwiftUI
 
 struct HomeView: View{
-
+    
     @StateObject private var searchViewModel = SearchViewModel()
+    
+    let columns = [
+        GridItem(.flexible()),
+        GridItem(.flexible())
+    ]
     
     var body: some View{
         ScrollView(.vertical, showsIndicators: false){
             
             VStack(spacing: 20){
-               
+                
                 // Navbar
                 CustomNavigationBarView(selectedTab: .home)
-               
+                
                 // Search Bar
                 
                 HStack(spacing: 12) {
@@ -35,7 +40,7 @@ struct HomeView: View{
                     .frame(maxWidth: .infinity, maxHeight: 40)
                     .background(Color.gray.opacity(0.2))
                     .cornerRadius(10)
-
+                    
                     // Button 20%
                     Button {
                         print("Button pressed")
@@ -49,10 +54,10 @@ struct HomeView: View{
                             .background(Color.gray.opacity(0.2))
                             .cornerRadius(10)
                     }
-                  
+                    
                 }
                 .frame(height: 40)
-               
+                
                 // Categories Selection
                 
                 HStack{
@@ -114,46 +119,60 @@ struct HomeView: View{
                     Text("See All")
                         .font(.caption)
                 }
-                
-                
-                VStack(spacing: 20) {
-                    Image("girlPhoto")
-                        .resizable()
-                        .scaledToFill()
-                        .frame(width: 160, height: 150)
-                        .clipped()
-                        .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
-                    
-                    HStack {
-                        VStack(alignment: .leading) {
-                            Text("Cotton T-shirt")
-                                .font(.headline)
-                            HStack {
-                                Text("$69.00")
-                                    .font(.caption)
-                                Text("$169.00")
-                                    .font(.caption2)
-                                    .strikethrough() // optional for old price
-                            }
+                LazyVGrid(columns: columns, spacing: 20) {
+                    ForEach(0..<10, id: \.self) { index in
+                        NavigationLink(destination: ProductView()) {
+                            ProductCardView()
                         }
-                        Spacer()
-                        Button {
-                            print("Bell pressed")
-                        } label: {
-                            Image(systemName: "bell.fill")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 15, height: 15)
-                                .padding(8)
-                                .background(Color.gray.opacity(0.2))
-                                .cornerRadius(8)
+                        .buttonStyle(PlainButtonStyle()) // removes default nav highlight
+                    }
+                    .frame(width: 160, height: 200)
+                }
+                
+                
+            }
+        }
+        
+    }
+    struct ProductCardView: View {
+        var body: some View {
+            VStack(spacing: 12) {
+                Image("girlPhoto")
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: 160, height: 150)
+                    .clipped()
+                    .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                
+                HStack {
+                    VStack(alignment: .leading) {
+                        Text("Cotton T-shirt")
+                            .font(.headline)
+                        HStack(spacing: 6) {
+                            Text("$69.00")
+                                .font(.caption)
+                                .foregroundColor(.orange)
+                            Text("$169.00")
+                                .font(.caption2)
+                                .strikethrough()
+                                .foregroundColor(.gray)
                         }
                     }
+                    Spacer()
+                    Button {
+                        print("Bell pressed")
+                    } label: {
+                        Image(systemName: "bell.fill")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 15, height: 15)
+                            .padding(8)
+                            .background(Color.gray.opacity(0.2))
+                            .cornerRadius(8)
+                    }
                 }
-                .frame(width: 160, height: 200)
             }
-          
-           
+            .frame(width: 160)
         }
     }
 }
