@@ -17,65 +17,7 @@ struct HomeView: View{
             VStack(spacing: 20){
                
                 // Navbar
-                
-                HStack {
-                    
-                    // Left Icon
-                    Button(action: {
-                        print("Button pressed")
-                    }) {
-                        Image("girlPhoto")
-                            .resizable()
-                            .scaledToFill()
-                            .frame(width: 50, height: 50)
-                            .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
-                    }
-                    .buttonStyle(PlainButtonStyle())
-                    
-                    
-                    
-                    // Center Text
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text("Hello Allex")
-                            .font(.callout)
-                            .fontWeight(.medium)
-                        Text("Good Morning")
-                            .font(.headline)
-                            .fontWeight(.bold)
-                    }
-                   
-
-                    Spacer()
-
-                    // Right Buttons
-                    HStack(spacing: 12) {
-                        Button {
-                            print("Bell pressed")
-                        } label: {
-                            Image(systemName: "bell.fill")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 25, height: 25)
-                                .padding(8)
-                                .background(Color.gray.opacity(0.2))
-                                .cornerRadius(8)
-                        }
-
-                        Button {
-                            print("Ellipsis pressed")
-                        } label: {
-                            Image(systemName: "ellipsis")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 25, height: 25)
-                                .padding(8)
-                                .background(Color.gray.opacity(0.2))
-                                .cornerRadius(8)
-                        }
-                    }
-                    
-                }
-                .frame(height: 50)
+                CustomNavigationBarView(selectedTab: .home)
                
                 // Search Bar
                 

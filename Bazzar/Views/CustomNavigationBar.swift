@@ -17,22 +17,34 @@ struct CustomNavigationBarView: View {
         HStack {
             switch selectedTab {
             case .home:
-                Button {
-                    goToProfile = true
-                } label: {
-                    HStack {
-                        Image("Mark")
-                            .resizable()
-                            .frame(width: 50, height: 50)
-                            .clipShape(RoundedRectangle(cornerRadius: 12))
-                        
-                        VStack(alignment: .leading) {
-                            Text("Hi, \(user.first?.name ?? "User")").font(.headline).foregroundStyle(.black)
-                            Text("Welcome Back").font(.caption).foregroundStyle(.black)
-                        }
-                    }
-                }
                 
+                // Left Icon
+                Button(action: {
+                    goToProfile = true
+                }) {
+                    Image("girlPhoto")
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: 50, height: 50)
+                        .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+                }
+                .buttonStyle(PlainButtonStyle())
+                
+                
+                
+                // Center Text
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Hello Allex")
+                        .font(.callout)
+                        .fontWeight(.medium)
+                    Text("Good Morning")
+                        .font(.headline)
+                        .fontWeight(.bold)
+                }
+               
+
+                Spacer()
+
          
             case .categories:
                 Text("Categories")
@@ -48,23 +60,37 @@ struct CustomNavigationBarView: View {
                     .fontWeight(.semibold)
             }
             
-            Spacer()
-            
-            Button {
-                goToNotification = true
-            } label: {
-                Image(systemName: "bell")
-                    .foregroundStyle(.black)
-                    .font(.system(size: 24, weight: .light))
-                    .frame(width: 50, height: 50)
-                    .padding(1)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 20)
-                            .stroke(Color.gray, lineWidth: 0.5)
-                    )
+           
+            // Right Buttons
+            HStack(spacing: 12) {
+                Button {
+                    print("Bell pressed")
+                } label: {
+                    Image(systemName: "bell.fill")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 25, height: 25)
+                        .padding(8)
+                        .background(Color.gray.opacity(0.2))
+                        .cornerRadius(8)
+                }
+
+                Button {
+                    print("Ellipsis pressed")
+                } label: {
+                    Image(systemName: "ellipsis")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 25, height: 25)
+                        .padding(8)
+                        .background(Color.gray.opacity(0.2))
+                        .cornerRadius(8)
+                }
             }
+            
         }
         .frame(height: 60)
+        
         
         // Attach Screens
         .sheet(isPresented: $goToProfile){
@@ -78,9 +104,15 @@ struct CustomNavigationBarView: View {
         }
         .navigationDestination(isPresented: $goToNotification) {
             NotificationView()
-                .navigationTitle("Notification View")
+                .navigationTitle("Notification")
                 .navigationBarTitleDisplayMode(.inline)
         }
+        
+        .sheet(isPresented: $goToNotification){
+            ProfileView()
+                .navigationTitle("Profile")
+        }
+        
     }
 }
 
