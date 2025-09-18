@@ -69,40 +69,41 @@ struct HomeView: View{
                 
                 // Banner Selection
                 
-                ZStack(alignment: .bottomLeading) {
-                          // Background image
-                          Image("bannerPhoto") 
-                              .resizable()
-                              .scaledToFill()
-                              .frame(height: 250, )
-                              .clipped()
-                              .cornerRadius(12)
-                          
-                          // Gradient overlay for text visibility
-                          LinearGradient(
-                              gradient: Gradient(colors: [Color.black.opacity(0.0), Color.black.opacity(0.4)]),
-                              startPoint: .top,
-                              endPoint: .bottom
-                          )
-                          .cornerRadius(12)
-                          
-                          // Optional text / CTA
-                          VStack(alignment: .leading, spacing: 8) {
-                              Text("Mega Sale!")
-                                  .font(.title)
-                                  .fontWeight(.bold)
-                                  .foregroundColor(.white)
-                              
-                              Text("Up to 50% off on selected items")
-                                  .font(.subheadline)
-                                  .foregroundColor(.white)
-                          }
-                          .padding()
-                      }
-                      .frame(height: 250)
-                      .shadow(radius: 3)
-                     
-                  }
+                ZStack {
+                    // Background orange gradient
+                    LinearGradient(
+                        gradient: Gradient(colors: [Color.orange.opacity(0.8), Color.orange.opacity(0.5)]),
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    )
+                    .cornerRadius(12)
+                    
+                    HStack {
+                        // Left Text
+                        VStack(alignment: .leading, spacing: 6) {
+                            Text("Mega Sale!")
+                                .font(.title2)
+                                .fontWeight(.bold)
+                                .foregroundColor(.white)
+                            
+                            Text("Up to 50% off on selected items")
+                                .font(.subheadline)
+                                .foregroundColor(.white.opacity(0.9))
+                        }
+                        .padding()
+                        
+                        Spacer()
+                        
+                        // Right Image
+                        Image("bannerProduct") // Replace with your product image
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 120, height: 120)
+                            .padding(.trailing)
+                    }
+                }
+                .frame(height: 250)
+               
                 
                 
                 

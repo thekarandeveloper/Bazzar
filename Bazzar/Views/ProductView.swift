@@ -4,6 +4,7 @@ struct ProductView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var isWishlisted = false
     @State private var quantity = 1
+    @StateObject private var razorpayManager = RazorpayManager()
     var body: some View {
         VStack(spacing: 0) {
             
@@ -30,9 +31,10 @@ struct ProductView: View {
                 Spacer()
                 
                 Button(action: {
-                    print("Buy Now")
+                    razorpayManager.startPayment(amount: 69.0, productName: "Cotton T-Shirt")
+
                 }) {
-                    Image(systemName: "heart")
+                    Image(systemName: "cart")
                         .resizable()
                         .foregroundStyle(Color.black)
                         .scaledToFit()

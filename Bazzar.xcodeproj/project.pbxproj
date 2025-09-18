@@ -13,6 +13,7 @@
 		CD4B28362E7C03AC0014D3B1 /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = CD4B28352E7C03AC0014D3B1 /* FirebaseDatabase */; };
 		CD4B28382E7C03AC0014D3B1 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = CD4B28372E7C03AC0014D3B1 /* FirebaseFirestore */; };
 		CD4B283A2E7C03AC0014D3B1 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = CD4B28392E7C03AC0014D3B1 /* FirebaseStorage */; };
+		CDA97A432E7C9F5C00BF7C9A /* RazorpayCheckout in Frameworks */ = {isa = PBXBuildFile; productRef = CDA97A422E7C9F5C00BF7C9A /* RazorpayCheckout */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -76,6 +77,7 @@
 			files = (
 				CD3C836F2E7C35CE004B2DC6 /* GoogleSignIn in Frameworks */,
 				CD4B28362E7C03AC0014D3B1 /* FirebaseDatabase in Frameworks */,
+				CDA97A432E7C9F5C00BF7C9A /* RazorpayCheckout in Frameworks */,
 				CD4B283A2E7C03AC0014D3B1 /* FirebaseStorage in Frameworks */,
 				CD3C83712E7C35CE004B2DC6 /* GoogleSignInSwift in Frameworks */,
 				CD4B28342E7C03AC0014D3B1 /* FirebaseAuth in Frameworks */,
@@ -146,6 +148,7 @@
 				CD4B28392E7C03AC0014D3B1 /* FirebaseStorage */,
 				CD3C836E2E7C35CE004B2DC6 /* GoogleSignIn */,
 				CD3C83702E7C35CE004B2DC6 /* GoogleSignInSwift */,
+				CDA97A422E7C9F5C00BF7C9A /* RazorpayCheckout */,
 			);
 			productName = Bazzar;
 			productReference = CD4B28082E7C00B90014D3B1 /* Bazzar.app */;
@@ -232,6 +235,7 @@
 			packageReferences = (
 				CD4B28322E7C03AC0014D3B1 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				CD3C836D2E7C35CE004B2DC6 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
+				CDA97A412E7C9F5B00BF7C9A /* XCRemoteSwiftPackageReference "razorpay-pod" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = CD4B28092E7C00B90014D3B1 /* Products */;
@@ -617,6 +621,14 @@
 				minimumVersion = 12.3.0;
 			};
 		};
+		CDA97A412E7C9F5B00BF7C9A /* XCRemoteSwiftPackageReference "razorpay-pod" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/razorpay/razorpay-pod";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.4.5;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -649,6 +661,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = CD4B28322E7C03AC0014D3B1 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseStorage;
+		};
+		CDA97A422E7C9F5C00BF7C9A /* RazorpayCheckout */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CDA97A412E7C9F5B00BF7C9A /* XCRemoteSwiftPackageReference "razorpay-pod" */;
+			productName = RazorpayCheckout;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
