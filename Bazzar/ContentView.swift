@@ -5,38 +5,56 @@
 //  Created by Karan Kumar on 18/09/25.
 //
 
-
 import SwiftUI
 import SwiftData
+
 struct ContentView: View {
     
-    @State private var selectedTab: Tab = .home
-    @State private var showAddScreen = false
-    
     @Environment(\.modelContext) private var context
-   
+    
     var body: some View {
-        
-        ZStack(alignment: .bottom){
+        TabView {
             
-            // Content of selected tab
-            
-            Group {
-                switch selectedTab {
-                case .home:
-                    NavigationStack{HomeView().padding(20)}.navigationBarBackButtonHidden(true)
-                case .categories:
-                    NavigationStack{CategoryView().padding(20)}.navigationBarBackButtonHidden(true)
-                case .cart:
-                    NavigationStack{CartView().padding(20)}.navigationBarBackButtonHidden(true)
-                case .account:
-                    NavigationStack{ProfileView().padding(20)}.navigationBarBackButtonHidden(true)
-                }
+            // Home Tab
+            NavigationStack {
+                HomeView()
+                    .padding(20)
+                    .navigationBarBackButtonHidden(true)
             }
-            CustomTabbar(selectedTab: $selectedTab)
-           
+            .tabItem {
+                Label("Home", systemImage: "house.fill")
+            }
+            
+            // Categories Tab
+            NavigationStack {
+                CategoryView()
+                    .padding(20)
+                    .navigationBarBackButtonHidden(true)
+            }
+            .tabItem {
+                Label("Categories", systemImage: "square.grid.2x2.fill")
+            }
+            
+            // Cart Tab
+            NavigationStack {
+                CartView()
+                    .padding(20)
+                    .navigationBarBackButtonHidden(true)
+            }
+            .tabItem {
+                Label("Cart", systemImage: "cart.fill")
+            }
+            
+            // Profile Tab
+            NavigationStack {
+                ProfileView()
+                    .padding(20)
+                    .navigationBarBackButtonHidden(true)
+            }
+            .tabItem {
+                Label("Account", systemImage: "person.fill")
+            }
         }
+        .accentColor(.orange) // Selected tab icon color
     }
 }
-
-

@@ -156,7 +156,8 @@ struct ProductView: View {
             .padding(.horizontal)
         }
         .toolbar(.hidden, for: .navigationBar)
-       
+        .toolbar(.hidden, for: .tabBar)
+        
     }
 }
 #Preview{
