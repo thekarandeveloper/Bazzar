@@ -18,7 +18,7 @@ struct HomeView: View{
     var body: some View{
        
         ScrollView(.vertical, showsIndicators: false){
-            
+           
             // Navbar
             CustomNavigationBarView(selectedTab: .home)
             
@@ -69,41 +69,17 @@ struct HomeView: View{
                 
                 // Banner Selection
                 
-                ZStack {
-                    // Background orange gradient
-                    LinearGradient(
-                        gradient: Gradient(colors: [Color.orange.opacity(0.8), Color.orange.opacity(0.5)]),
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    )
-                    .cornerRadius(12)
-                    
-                    HStack {
-                        // Left Text
-                        VStack(alignment: .leading, spacing: 6) {
-                            Text("Mega Sale!")
-                                .font(.title2)
-                                .fontWeight(.bold)
-                                .foregroundColor(.white)
-                            
-                            Text("Up to 50% off on selected items")
-                                .font(.subheadline)
-                                .foregroundColor(.white.opacity(0.9))
-                        }
-                        .padding()
-                        
-                        Spacer()
-                        
-                        // Right Image
-                        Image("bannerProduct") // Replace with your product image
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 120, height: 120)
-                            .padding(.trailing)
-                    }
-                }
-                .frame(height: 250)
-               
+                ZStack(alignment: .bottomLeading) {
+                          // Background image
+                          Image("bannerPhoto") 
+                              .resizable()
+                              .scaledToFill()
+                              .frame(height: 250, )
+                              .clipped()
+                              .cornerRadius(12)
+                      }
+                      .frame(height: 250)
+                  }
                 
                 
                 
@@ -135,7 +111,7 @@ struct HomeView: View{
     struct ProductCardView: View {
         
         var product: Product
-        
+        @State private var isWishlisted: Bool = false
         var body: some View {
             VStack(spacing: 12) {
                 Image("\(product.imageUrl)")
@@ -150,10 +126,10 @@ struct HomeView: View{
                         Text("\(product.name)")
                             .font(.headline)
                         HStack(spacing: 6) {
-                            Text("\(product.price)")
+                            Text("\(product.price, specifier: "%.2f")")
                                 .font(.caption)
                                 .foregroundColor(.orange)
-                            Text("\(product.oldPrice)")
+                            Text("\(product.oldPrice, specifier: "%.2f")")
                                 .font(.caption2)
                                 .strikethrough()
                                 .foregroundColor(.gray)
@@ -161,15 +137,23 @@ struct HomeView: View{
                     }
                     Spacer()
                     Button {
-                        print("Bell pressed")
+                        // Toggle state
+                        isWishlisted.toggle()
+                        
+                        // Call function to update wishlist persistence
+//                        if isWishlisted {
+//                            addToWishlist(product: product)
+//                        } else {
+//                            removeFromWishlist(product: product)
+//                        }
                     } label: {
-                        Image(systemName: "cart.fill")
+                        Image(systemName: isWishlisted ? "heart.fill" : "heart")
                             .resizable()
                             .scaledToFit()
                             .frame(width: 15, height: 15)
                             .padding(8)
-                            .background(Color.orange)
-                            .foregroundStyle(Color.white)
+                            .background(Color.gray.opacity(0.2))
+                            .foregroundStyle(isWishlisted ? Color.red : Color.black)
                             .cornerRadius(8)
                     }
                 }
