@@ -1,118 +1,162 @@
-//
-//  ProductView.swift
-//  Bazzar
-//
-//  Created by Karan Kumar on 18/09/25.
-//
-
 import SwiftUI
 
 struct ProductView: View {
+    @Environment(\.dismiss) private var dismiss
     @State private var isWishlisted = false
     @State private var quantity = 1
-    
     var body: some View {
         VStack(spacing: 0) {
             
-            // Banner
-            Image("girlPhoto") // replace with product image
-                .resizable()
-                .scaledToFill()
-                .frame(height: 300)
-                .clipped()
-                .overlay(
-                    // Top Bar (Back + Wishlist)
-                    HStack {
-                        Button {
-                            print("Back pressed")
-                        } label: {
-                            Image(systemName: "chevron.left")
-                                .foregroundColor(.white)
-                                .padding()
-                                .background(Color.black.opacity(0.4))
-                                .clipShape(Circle())
-                        }
-                        
-                        Spacer()
-                        
-                        Button {
-                            isWishlisted.toggle()
-                        } label: {
-                            Image(systemName: isWishlisted ? "heart.fill" : "heart")
-                                .foregroundColor(isWishlisted ? .orange : .white)
-                                .padding()
-                                .background(Color.black.opacity(0.4))
-                                .clipShape(Circle())
-                        }
-                    }
-                    .padding(),
-                    alignment: .top
-                )
-            
-            // Content
-            ScrollView(showsIndicators: false) {
-                VStack(alignment: .leading, spacing: 16) {
-                    
-                    // Title
-                    Text("Cotton T-shirt")
-                        .font(.title)
-                        .fontWeight(.bold)
-                    
-                    // Ratings
-                    HStack(spacing: 4) {
-                        ForEach(0..<5) { i in
-                            Image(systemName: i < 4 ? "star.fill" : "star")
-                                .foregroundColor(.orange)
-                        }
-                        Text("(120 Reviews)")
-                            .font(.caption)
-                            .foregroundColor(.gray)
-                    }
-                    
-                    // Description
-                    Text("This premium cotton T-shirt is lightweight, soft and breathable. Perfect for daily wear and casual outings.")
-                        .font(.body)
-                        .foregroundColor(.secondary)
-                    
-                    // Price
-                    HStack(spacing: 10) {
-                        Text("$69.00")
-                            .font(.title2)
-                            .foregroundColor(.orange)
-                        Text("$169.00")
-                            .font(.callout)
-                            .foregroundColor(.gray)
-                            .strikethrough()
-                    }
-                    
-                    // Quantity Selector (optional)
-                    Stepper("Quantity: \(quantity)", value: $quantity, in: 1...10)
-                        .padding(.top)
-                }
-                .padding()
-            }
-            
-            // Bottom Action Buttons
-            HStack(spacing: 16) {
+            // Custom Top Bar
+            HStack {
                 Button(action: {
-                    print("Added to Cart")
+                    dismiss()
                 }) {
-                    Text("Add to Cart")
-                        .fontWeight(.bold)
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(Color.orange)
-                        .foregroundColor(.white)
-                        .cornerRadius(12)
+                    Image(systemName: "chevron.left")
+                        .resizable()
+                        .foregroundStyle(Color.black)
+                        .scaledToFit()
+                        .frame(width: 20, height: 20)
+                        .padding(8)
+                        .background(Color.gray.opacity(0.2))
+                        .cornerRadius(8)
+                }
+                
+                Spacer()
+                
+                Text("Details")
+                    .font(.headline)
+                
+                Spacer()
+                
+                Button(action: {
+                    print("Buy Now")
+                }) {
+                    Image(systemName: "heart")
+                        .resizable()
+                        .foregroundStyle(Color.black)
+                        .scaledToFit()
+                        .frame(width: 20, height: 20)
+                        .padding(8)
+                        .background(Color.gray.opacity(0.2))
+                        .cornerRadius(8)
                 }
             }
-            .padding()
-            .background(Color.white.shadow(radius: 2))
+            .padding(.horizontal)
+            .frame(height: 44)
+            
+            // Scroll Content
+            ScrollView(.vertical, showsIndicators: false) {
+                VStack (alignment: .leading, spacing: 15){
+                    Rectangle()
+                        .fill(Color.orange.opacity(0.3))
+                        .frame(height: 350)
+                        .cornerRadius(12)
+                      
+                    
+                    VStack(alignment: .leading, spacing: 0){
+                        HStack{
+                            Text("Product Title")
+                                .font(.title2)
+                                .fontWeight(.bold)
+                                .padding(.top)
+                            Spacer()
+                            Text("$86.00")
+                                .font(.title2)
+                                .fontWeight(.bold)
+                                .padding(.top)
+                        }
+                        Spacer().frame(maxHeight: 20)
+                        Text("Product Title")
+                            .font(.caption)
+                    }
+                    
+                    HStack {
+                        VStack(alignment: .leading){
+                            Text("Select Size")
+                                .font(.caption)
+                            HStack(spacing: 12) {
+                                ForEach(["S", "M", "L", "XL", "XXL"], id: \.self) { size in
+                                    Button(action: {
+                                        print("\(size) selected")
+                                    }) {
+                                        Text(size)
+                                            .font(.caption)
+                                            .fontWeight(.medium)
+                                            .frame(width: 40, height: 30)
+                                            .background(Color.gray.opacity(0.2))
+                                            .foregroundColor(.black)
+                                            .cornerRadius(6)
+                                    }
+                                }
+                            }
+                        }
+                        Spacer()
+                        VStack(alignment: .trailing, spacing: 8) {
+                                    Text("Quantity")
+                                        .font(.caption)
+                                    
+                                    Picker("Select Quantity", selection: $quantity) {
+                                        ForEach(1..<11) { number in // 1 se 10 tak
+                                            Text("\(number)").tag(number)
+                                        }
+                                    }
+                                    .pickerStyle(MenuPickerStyle())
+                                    .frame(width: 80, height: 30)
+                                    .background(Color.gray.opacity(0.2))
+                                    .cornerRadius(6)
+                                }
+                     
+                    }
+                    Text("Description")
+                        .font(.caption)
+                    
+                    Text("This is the product description. Add more details here.This is the product description. Add more details here.This is the product description. Add more details here.This is the product description. Add more details here. Add more details here.This is the product description. Add more details here.This is the product description. Add more details here.")
+                        .font(.callout)
+                        .foregroundColor(.secondary)
+                }
+                .padding(.bottom, 80)
+            }
+            .padding(16)
+            // Bottom Buttons
+            HStack(spacing: 12) {
+                Button(action: {
+                    print("Add to Cart pressed")
+                }) {
+                    HStack {
+                        Image(systemName: "cart.fill")
+                        Text("Add to Cart")
+                            .fontWeight(.semibold)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    .background(Color.gray.opacity(0.2))
+                    .foregroundColor(.black)
+                    .cornerRadius(10) // rounded corners
+                }
+                
+                Button(action: {
+                    print("Buy Now pressed")
+                }) {
+                    HStack {
+                        Image(systemName: "creditcard.fill")
+                        Text("Buy Now")
+                            .fontWeight(.semibold)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    .background(Color.orange)
+                    .foregroundColor(.white)
+                    .cornerRadius(10) // rounded corners
+                }
+            }
+            .frame(height: 50) // proper button height
+            .padding(.horizontal)
         }
-        .ignoresSafeArea(edges: .top) // banner full screen top
+        .toolbar(.hidden, for: .navigationBar)
+       
     }
 }
-
-#Preview {
+#Preview{
     ProductView()
 }

@@ -19,8 +19,6 @@ struct ContentView: View {
         
         ZStack(alignment: .bottom){
             
-            
-          
             // Content of selected tab
             
             Group {
@@ -36,7 +34,6 @@ struct ContentView: View {
                 }
             }
             CustomTabbar(selectedTab: $selectedTab)
-           
            
         }
     }
