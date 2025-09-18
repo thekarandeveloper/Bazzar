@@ -26,13 +26,13 @@ struct ContentView: View {
             Group {
                 switch selectedTab {
                 case .home:
-                    NavigationStack{HomeView().padding(20)}
+                    NavigationStack{HomeView().padding(20)}.navigationBarBackButtonHidden(true)
                 case .categories:
-                    NavigationStack{CategoryView().padding(20)}
+                    NavigationStack{CategoryView().padding(20)}.navigationBarBackButtonHidden(true)
                 case .cart:
-                    NavigationStack{CartView().padding(20)}
+                    NavigationStack{CartView().padding(20)}.navigationBarBackButtonHidden(true)
                 case .account:
-                    NavigationStack{ProfileView().padding(20)}
+                    NavigationStack{ProfileView().padding(20)}.navigationBarBackButtonHidden(true)
                 }
             }
             CustomTabbar(selectedTab: $selectedTab)

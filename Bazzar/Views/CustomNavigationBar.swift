@@ -46,7 +46,7 @@ struct CustomNavigationBarView: View {
             }
             
         }
-        .frame(height: 40)
+        .frame(height: 45)
         
         
         // Attach Screens
@@ -71,13 +71,4 @@ struct CustomNavigationBarView: View {
         }
         
     }
-}
-
-#Preview {
-    NavigationStack {
-        CustomNavigationBarView(selectedTab: .home)
-    }
-}
-#Preview{
-    CustomNavigationBarView(selectedTab: .home)
 }

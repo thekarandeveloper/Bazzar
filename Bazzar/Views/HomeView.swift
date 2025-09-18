@@ -16,23 +16,22 @@ struct HomeView: View{
     ]
     
     var body: some View{
+        
+        
         // Navbar
         CustomNavigationBarView(selectedTab: .home)
-        .frame(height: 40)
         
         ScrollView(.vertical, showsIndicators: false){
             
+         
             VStack(spacing: 20){
                 
-              
                 // Categories Selection
                 
                 HStack{
                     Text("Categories")
                         .font(.headline)
                     Spacer()
-                    Text("See All")
-                        .font(.caption)
                 }
                 
                 // Options Selection
@@ -72,8 +71,40 @@ struct HomeView: View{
                 
                 // Banner Selection
                 
-                RoundedRectangle(cornerRadius: 12, style: .continuous)
-                    .frame(width: .infinity, height: 250)
+                ZStack(alignment: .bottomLeading) {
+                          // Background image
+                          Image("bannerPhoto") // replace with your banner image
+                              .resizable()
+                              .scaledToFill()
+                              .frame(height: 250)
+                              .clipped()
+                              .cornerRadius(12)
+                          
+                          // Gradient overlay for text visibility
+                          LinearGradient(
+                              gradient: Gradient(colors: [Color.black.opacity(0.0), Color.black.opacity(0.4)]),
+                              startPoint: .top,
+                              endPoint: .bottom
+                          )
+                          .cornerRadius(12)
+                          
+                          // Optional text / CTA
+                          VStack(alignment: .leading, spacing: 8) {
+                              Text("Mega Sale!")
+                                  .font(.title)
+                                  .fontWeight(.bold)
+                                  .foregroundColor(.white)
+                              
+                              Text("Up to 50% off on selected items")
+                                  .font(.subheadline)
+                                  .foregroundColor(.white)
+                          }
+                          .padding()
+                      }
+                      .frame(height: 250)
+                      .shadow(radius: 3)
+                      .padding(.horizontal)
+                  }
                 
                 
                 
@@ -97,7 +128,8 @@ struct HomeView: View{
                 }
                 
                 
-            }
+        }.padding(0)
+        
         }
         
     }
@@ -142,4 +174,4 @@ struct HomeView: View{
             .frame(width: 160)
         }
     }
-}
+
