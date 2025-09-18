@@ -4,9 +4,14 @@
 //
 //  Created by Karan Kumar on 18/09/25.
 //
+
+
 import SwiftUI
 
 struct ContentView: View {
+    
+//    @State var searchtext: String
+    
     var body: some View {
         TabView {
             
@@ -35,8 +40,4 @@ struct ContentView: View {
             }
         }
     }
-}
-
-#Preview {
-    ContentView()
 }
