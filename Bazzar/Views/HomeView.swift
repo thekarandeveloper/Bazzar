@@ -61,8 +61,6 @@ struct HomeView: View{
                     Text("Popular Product")
                         .font(.headline)
                     Spacer()
-                    Text("See All")
-                        .font(.caption)
                 }
                 LazyVGrid(columns: columns, spacing: 20) {
                     ForEach(DataManager.shared.products) { product in
