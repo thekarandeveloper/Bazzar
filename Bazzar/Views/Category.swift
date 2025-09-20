@@ -1,11 +1,3 @@
-//
-//  Category.swift
-//  Bazzar
-//
-//  Created by Karan Kumar on 18/09/25.
-//
-
-
 import SwiftUI
 
 struct CategoryView: View {
@@ -21,23 +13,33 @@ struct CategoryView: View {
     
     let columns = [
         GridItem(.flexible()),
+        GridItem(.flexible()),
         GridItem(.flexible())
     ]
     
+    // Assuming you have all products
+    let allProducts: [Product] = DataManager.shared.products
+    
     var body: some View {
-        CustomNavigationBarView(selectedTab: .home)
         ScrollView {
-//            LazyVGrid(columns: columns, spacing: 20) {
-//                ForEach(categories, id: \.0) { category in
-//                    NavigationLink(destination: CategoryDetailView(categoryName: "Men")) {
-//                        CategoryCardView(name: category.0, imageName: category.1)
-//                    }
-//                    .buttonStyle(PlainButtonStyle())
-//                }
-//            }
-//            .padding()
+            LazyVGrid(columns: columns, spacing: 16) {
+                ForEach(categories, id: \.0) { category in
+                    NavigationLink {
+                        ProductListView(
+                            title: category.0,
+                            products: allProducts,
+                            filterCategory: category.0
+                        )
+                    } label: {
+                        CategoryCardView(name: category.0, imageName: category.1)
+                    }
+                    .buttonStyle(PlainButtonStyle()) // taaki tap highlight na aaye
+                }
+            }
+            .padding()
         }
         .navigationTitle("Categories")
+        .navigationBarTitleDisplayMode(.inline)
     }
 }
 
@@ -48,15 +50,20 @@ struct CategoryCardView: View {
     
     var body: some View {
         ZStack(alignment: .bottomLeading) {
+            Rectangle()
+                .fill(Color.white)
+                .cornerRadius(12)
+                .shadow(radius: 3)
+            
             Image(imageName)
                 .resizable()
                 .scaledToFill()
-                .frame(height: 160)
+                .frame(height: 120)
                 .clipped()
                 .cornerRadius(12)
             
             LinearGradient(
-                gradient: Gradient(colors: [Color.black.opacity(0.0), Color.black.opacity(0.5)]),
+                gradient: Gradient(colors: [Color.black.opacity(0.0), Color.black.opacity(0.3)]),
                 startPoint: .top,
                 endPoint: .bottom
             )
@@ -65,9 +72,8 @@ struct CategoryCardView: View {
             Text(name)
                 .font(.headline)
                 .foregroundColor(.white)
-                .padding(10)
+                .padding(8)
         }
         .frame(height: 160)
-        .shadow(radius: 3)
     }
 }

@@ -12,19 +12,14 @@ struct CustomNavigationBarView: View {
     @State var selectedTab: Tab
     @State private var goToCart = false
     @StateObject private var searchViewModel = SearchViewModel()
-
+    @StateObject var searchManager = SearchManager(products: DataManager.shared.products)
+    @EnvironmentObject var wishlistManager: WishlistManager
+    
     var body: some View {
         HStack(spacing: 12) {
             // Search Bar
-            HStack {
-                Image(systemName: "magnifyingglass")
-                    .foregroundColor(.gray)
-                    .padding(.leading, 8)
-                
-                TextField("Search", text: $searchViewModel.searchText)
-                    .font(.subheadline)
-                    .padding(8)
-            }
+            SearchBarView(searchManager: searchManager)
+                .environmentObject(wishlistManager)
             .frame(maxWidth: .infinity, maxHeight: 40)
             .background(Color.gray.opacity(0.2))
             .cornerRadius(10)
@@ -68,5 +63,39 @@ struct CustomNavigationBarView: View {
                
         }
        
+    }
+}
+struct SearchBarView: View {
+    @StateObject var searchManager: SearchManager
+    @EnvironmentObject var wishlistManager: WishlistManager
+    @State private var goToResults = false
+    
+    var body: some View {
+        VStack {
+            HStack {
+                TextField("Search products...", text: $searchManager.query, onCommit: {
+                    searchManager.performSearch()
+                    goToResults = true
+                })
+                .textFieldStyle(RoundedBorderTextFieldStyle())
+                .submitLabel(.search)
+                
+                Button(action: {
+                    searchManager.performSearch()
+                    goToResults = true
+                }) {
+                    Image(systemName: "magnifyingglass")
+                }
+            }
+            .padding()
+            
+            NavigationLink(destination:
+                            ProductListView(title: "Search Results",
+                                            products: searchManager.filteredProducts)
+                            .environmentObject(wishlistManager),
+                           isActive: $goToResults) {
+                EmptyView()
+            }
+        }
     }
 }
