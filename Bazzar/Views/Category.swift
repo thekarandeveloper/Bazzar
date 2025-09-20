@@ -21,6 +21,9 @@ struct CategoryView: View {
     let allProducts: [Product] = DataManager.shared.products
     
     var body: some View {
+        // Navbar
+        CustomNavigationBarView(selectedTab: .home)
+        
         ScrollView {
             LazyVGrid(columns: columns, spacing: 16) {
                 ForEach(categories, id: \.0) { category in
@@ -38,8 +41,7 @@ struct CategoryView: View {
             }
             .padding()
         }
-        .navigationTitle("Categories")
-        .navigationBarTitleDisplayMode(.inline)
+      
     }
 }
 
