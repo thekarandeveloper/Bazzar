@@ -30,7 +30,7 @@ struct WishlistView: View {
                     Text("Your wishlist is empty")
                         .font(.headline)
                         .foregroundColor(.gray)
-                }
+                }.frame(maxHeight: .infinity)
                 .padding()
             } else {
                 LazyVGrid(columns: columns, spacing: 16) {

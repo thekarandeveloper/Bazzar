@@ -28,7 +28,7 @@ struct ContentView: View {
             // Categories Tab
             NavigationStack {
                 CategoryView()
-                    .padding(20)
+                    
                     .navigationBarBackButtonHidden(true)
             }
             .tabItem {
