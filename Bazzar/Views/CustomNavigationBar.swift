@@ -21,7 +21,7 @@ struct CustomNavigationBarView: View {
             SearchBarView(searchManager: searchManager)
                 .environmentObject(wishlistManager)
             .frame(maxWidth: .infinity, maxHeight: 40)
-            .background(Color.gray.opacity(0.2))
+            .background(Color.gray.opacity(0.1))
             .cornerRadius(10)
             
             // Cart Button with Badge
@@ -33,7 +33,8 @@ struct CustomNavigationBarView: View {
                         .resizable()
                         .scaledToFit()
                         .frame(width: 24, height: 24)
-                    
+                        .foregroundColor(.gray)
+                       
                     if cartManager.totalItems > 0 {
                         Text("\(cartManager.totalItems)")
                             .font(.caption2)
@@ -77,17 +78,20 @@ struct SearchBarView: View {
                     searchManager.performSearch()
                     goToResults = true
                 })
-                .textFieldStyle(RoundedBorderTextFieldStyle())
+                .textFieldStyle(PlainTextFieldStyle()) // simple style
                 .submitLabel(.search)
-                
+
                 Button(action: {
                     searchManager.performSearch()
                     goToResults = true
                 }) {
                     Image(systemName: "magnifyingglass")
+                        .foregroundColor(.gray)
                 }
             }
-            .padding()
+            .padding(10)
+            .background(Color.gray.opacity(0.1))
+            .cornerRadius(10)
             
             NavigationLink(destination:
                             ProductListView(title: "Search Results",
@@ -96,6 +100,25 @@ struct SearchBarView: View {
                            isActive: $goToResults) {
                 EmptyView()
             }
+        }
+    }
+}
+// MARK: - Preview
+struct CustomNavigationBarView_Previews: PreviewProvider {
+    static var previews: some View {
+        NavigationStack {
+            CustomNavigationBarView(selectedTab: .home)
+                .environmentObject(CartManager())       // provide dummy CartManager
+                .environmentObject(WishlistManager())   // provide dummy WishlistManager
+        }
+    }
+}
+
+struct SearchBarView_Previews: PreviewProvider {
+    static var previews: some View {
+        NavigationStack {
+            SearchBarView(searchManager: SearchManager(products: DataManager.shared.products))
+                .environmentObject(WishlistManager())   // provide dummy WishlistManager
         }
     }
 }
