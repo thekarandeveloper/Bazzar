@@ -5,10 +5,12 @@
 //  Created by Karan Kumar on 18/09/25.
 //
 import SwiftUI
+import FirebaseAuth
 
 struct ProfileView: View {
     
     @State private var showSettings = false
+    @Environment(\.dismiss) private var dismiss
     
     var body: some View {
         // Navbar
@@ -57,17 +59,32 @@ struct ProfileView: View {
                     StatCard(number: "3", title: "Cart", color: .green)
                 }
               
-                
                 // Quick Actions
                 VStack(spacing: 16) {
-                    ActionButton(title: "Edit Profile", icon: "pencil", color: .orange)
-                    ActionButton(title: "Manage Addresses", icon: "map.fill", color: .blue)
-                    ActionButton(title: "Payment Methods", icon: "creditcard.fill", color: .green)
-                    ActionButton(title: "Order History", icon: "bag.fill", color: .purple)
-                    ActionButton(title: "Settings", icon: "gearshape.fill", color: .gray)
-                    ActionButton(title: "Logout", icon: "arrowshape.turn.up.left", color: .red)
+                    ActionButton(title: "Edit Profile", icon: "pencil", color: .orange) {
+                        print("Edit Profile tapped")
+                    }
+                    ActionButton(title: "Manage Addresses", icon: "map.fill", color: .blue) {
+                        print("Manage Addresses tapped")
+                    }
+                    ActionButton(title: "Payment Methods", icon: "creditcard.fill", color: .green) {
+                        print("Payment Methods tapped")
+                    }
+                    ActionButton(title: "Order History", icon: "bag.fill", color: .purple) {
+                        print("Order History tapped")
+                    }
+                    ActionButton(title: "Settings", icon: "gearshape.fill", color: .gray) {
+                        print("Settings tapped")
+                    }
+                    ActionButton(title: "Logout", icon: "arrowshape.turn.up.left", color: .red) {
+                        do {
+                            try Auth.auth().signOut()
+                            dismiss() // ya navigate to login screen
+                        } catch {
+                            print("Error signing out: \(error.localizedDescription)")
+                        }
+                    }
                 }
-                
                 
                 // Rewards / Loyalty Section
                 VStack(alignment: .leading, spacing: 12) {
@@ -96,7 +113,6 @@ struct ProfileView: View {
                     .cornerRadius(12)
                 }
               
-                
                 Spacer(minLength: 50)
             }
             .padding(.top, 20)
@@ -105,6 +121,38 @@ struct ProfileView: View {
     }
 }
 
+// MARK: - Action Button (with closure)
+struct ActionButton: View {
+    var title: String
+    var icon: String
+    var color: Color
+    var action: () -> Void   // 👈 added closure
+    
+    var body: some View {
+        Button(action: action) {
+            HStack {
+                Image(systemName: icon)
+                    .foregroundColor(color)
+                    .frame(width: 24)
+                
+                Text(title)
+                    .foregroundColor(.primary)
+                    .fontWeight(.medium)
+                
+                Spacer()
+                
+                if title != "Logout" {
+                    Image(systemName: "chevron.right")
+                        .foregroundColor(.gray)
+                        .font(.caption)
+                }
+            }
+            .padding()
+            .background(Color.gray.opacity(0.1))
+            .cornerRadius(12)
+        }
+    }
+}
 // MARK: - Stat Card
 struct StatCard: View {
     var number: String
@@ -122,36 +170,6 @@ struct StatCard: View {
                 .foregroundColor(.gray)
         }
         .frame(maxWidth: .infinity)
-        .padding()
-        .background(Color.gray.opacity(0.1))
-        .cornerRadius(12)
-    }
-}
-
-// MARK: - Action Button
-struct ActionButton: View {
-    var title: String
-    var icon: String
-    var color: Color
-    
-    var body: some View {
-        HStack {
-            Image(systemName: icon)
-                .foregroundColor(color)
-                .frame(width: 24)
-            
-            Text(title)
-                .foregroundColor(.primary)
-                .fontWeight(.medium)
-            
-            Spacer()
-            
-            if title != "Logout" {
-                Image(systemName: "chevron.right")
-                    .foregroundColor(.gray)
-                    .font(.caption)
-            }
-        }
         .padding()
         .background(Color.gray.opacity(0.1))
         .cornerRadius(12)
