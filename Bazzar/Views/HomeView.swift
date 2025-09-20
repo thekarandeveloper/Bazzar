@@ -22,50 +22,25 @@ struct HomeView: View{
             // Navbar
             CustomNavigationBarView(selectedTab: .home)
             
-            VStack(spacing: 20){
+            VStack(spacing: 10){
                 
                 // Categories Selection
-                
-                HStack{
+                HStack {
                     Text("Categories")
                         .font(.headline)
                     Spacer()
-                }
-                
+                }.padding(.top, 5)
+
                 // Options Selection
-                
-                HStack(alignment: .center, spacing: 20){
-                    
-                    Text("All")
-                        .font(.callout)
-                        .foregroundStyle(Color.white)
-                        .padding(.vertical, 10)
-                        .padding(.horizontal, 15)
-                        .background(Color.orange)
-                        .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
-                    Text("Men")
-                        .foregroundStyle(Color.black)
-                        .padding(.vertical, 10)
-                        .padding(.horizontal, 15)
-                        .background(Color.gray.opacity(0.2))
-                        .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
-                    Text("Women")
-                        .foregroundStyle(Color.black)
-                        .padding(.vertical, 10)
-                        .padding(.horizontal, 15)
-                        .background(Color.gray.opacity(0.2))
-                        .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
-                    Text("Girls")
-                        .foregroundStyle(Color.black)
-                        .padding(.vertical, 10)
-                        .padding(.horizontal, 15)
-                        .background(Color.gray.opacity(0.2))
-                        .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
-                    Spacer()
-                    
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(alignment: .center, spacing: 12) {
+                        CategoryChip(title: "All")
+                        CategoryChip(title: "Men")
+                        CategoryChip(title: "Women")
+                        CategoryChip(title: "Girls")
+                    }
+                    .padding(.bottom, 5)
                 }
-                .frame(maxWidth: .infinity)
-                
                 
                 // Banner Selection
                 ZStack(alignment: .bottomLeading) {
@@ -105,6 +80,26 @@ struct HomeView: View{
         }
         
     }
+struct CategoryChip: View {
+    var title: String
+    
+    var body: some View {
+        NavigationLink(destination: ProductListView(
+            title: title,
+            products: DataManager.shared.products,
+            filterCategory: title == "All" ? nil : title
+        )) {
+            Text(title)
+                .font(.callout)
+                .foregroundStyle(title == "All" ? Color.white : Color.black)
+                .padding(.vertical, 10)
+                .padding(.horizontal, 15)
+                .background(title == "All" ? Color.orange : Color.gray.opacity(0.2))
+                .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+        }
+        .buttonStyle(PlainButtonStyle()) // removes blue default highlight
+    }
+}
     struct ProductCardView: View {
         @EnvironmentObject var wishlistManager: WishlistManager
         @State private var isWishlisted: Bool = false
