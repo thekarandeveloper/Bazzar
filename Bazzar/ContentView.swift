@@ -42,7 +42,7 @@ struct ContentView: View {
                     .navigationBarBackButtonHidden(true)
             }
             .tabItem {
-                Label("Cart", systemImage: "cart.fill")
+                Label("Wishlist", systemImage: "heart.fill")
             }
             
             // Profile Tab

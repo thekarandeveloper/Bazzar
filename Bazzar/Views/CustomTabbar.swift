@@ -25,7 +25,7 @@ struct CustomTabbar: View {
             Spacer()
             tabButton(.categories, icon: "square.grid.2x2.fill", title: "Categories")
             Spacer()
-            tabButton(.cart, icon: "cart.fill", title: "Cart")
+            tabButton(.cart, icon: "heart", title: "Wishlist")
             Spacer()
             tabButton(.account, icon: "person.crop.circle.fill", title: "Account")
         }.padding()

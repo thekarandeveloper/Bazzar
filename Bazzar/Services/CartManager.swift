@@ -13,13 +13,15 @@ import FirebaseFirestore
 
 class CartManager: ObservableObject {
     @Published var items: [CartItem] = []
-
+    var totalItems: Int {
+           items.reduce(0) { $0 + $1.quantity }
+       }
+       
     func addToCart(product: Product, quantity: Int = 1) {
-        if let index = items.firstIndex(where: { $0.id == product.id }) {
+        if let index = items.firstIndex(where: { $0.product.id == product.id }) {
             items[index].quantity += quantity
         } else {
-            let newItem = CartItem(id: product.id ?? UUID().uuidString, product: product, quantity: quantity)
-            items.append(newItem)
+            items.append(CartItem(product: product, quantity: quantity))
         }
     }
 
@@ -39,4 +41,8 @@ class CartManager: ObservableObject {
     func isInCart(product: Product) -> Bool {
         return items.contains { $0.product.id == product.id }
     }
+    
+  
+      
+    
 }

@@ -9,12 +9,9 @@ import SwiftUI
 
 struct CartView: View {
     @EnvironmentObject var cartManager: CartManager
-    
+    @Environment(\.dismiss) private var dismiss
     var body: some View {
         VStack(spacing: 0) {
-            
-            // Navbar (optional custom)
-            CustomNavigationBarView(selectedTab: .cart)
             
             if cartManager.items.isEmpty {
                 Spacer()
@@ -67,7 +64,15 @@ struct CartView: View {
                 .background(Color(.systemBackground))
             }
         }
-        .navigationBarHidden(true)
+        .navigationTitle("Cart")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .cancellationAction) {
+                Button("Back") {
+                    dismiss()
+                }
+            }
+        }
     }
 }
 
