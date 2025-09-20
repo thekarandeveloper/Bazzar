@@ -37,7 +37,7 @@ struct ContentView: View {
             
             // Cart Tab
             NavigationStack {
-                CartView()
+                WishlistView()
                     .padding(20)
                     .navigationBarBackButtonHidden(true)
             }

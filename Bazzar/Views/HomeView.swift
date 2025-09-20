@@ -106,9 +106,11 @@ struct HomeView: View{
         
     }
     struct ProductCardView: View {
-        
-        var product: Product
+        @EnvironmentObject var wishlistManager: WishlistManager
         @State private var isWishlisted: Bool = false
+            
+        var product: Product
+       
         var body: some View {
             VStack(spacing: 12) {
                 Image("\(product.imageUrl)")
@@ -136,7 +138,12 @@ struct HomeView: View{
                     Button {
                         // Toggle state
                         isWishlisted.toggle()
-                        
+                       
+                        if wishlistManager.isInWishlist(product: product) {
+                                               wishlistManager.remove(productID: product.id!)
+                                           } else {
+                                               wishlistManager.add(product: product)
+                                           }
                    
                     } label: {
                         Image(systemName: isWishlisted ? "heart.fill" : "heart")

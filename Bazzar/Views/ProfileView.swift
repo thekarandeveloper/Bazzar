@@ -11,6 +11,9 @@ struct ProfileView: View {
     @State private var showSettings = false
     
     var body: some View {
+        // Navbar
+        CustomNavigationBarView(selectedTab: .home)
+        
         ScrollView(showsIndicators: false) {
             
             VStack(spacing: 30) {
@@ -153,8 +156,4 @@ struct ActionButton: View {
         .background(Color.gray.opacity(0.1))
         .cornerRadius(12)
     }
-}
-
-#Preview {
-    ProfileView()
 }

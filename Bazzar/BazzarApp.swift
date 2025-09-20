@@ -23,11 +23,12 @@ struct BazzarApp: App {
     
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
     @StateObject private var cartManager = CartManager()
+    @StateObject private var wishlistManager = WishlistManager()
     var body: some Scene {
         WindowGroup {
             RootView()
                 .environmentObject(cartManager)
-            
+                .environmentObject(wishlistManager)
         }.modelContainer(for: [User.self])
     }
     
