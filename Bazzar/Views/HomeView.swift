@@ -68,9 +68,7 @@ struct HomeView: View{
                 
                 
                 // Banner Selection
-                
                 ZStack(alignment: .bottomLeading) {
-                          // Background image
                           Image("bannerPhoto") 
                               .resizable()
                               .scaledToFill()
@@ -84,7 +82,6 @@ struct HomeView: View{
                 
                 
                 // Products Selection
-                
                 HStack{
                     Text("Popular Product")
                         .font(.headline)
@@ -94,7 +91,7 @@ struct HomeView: View{
                 }
                 LazyVGrid(columns: columns, spacing: 20) {
                     ForEach(DataManager.shared.products) { product in
-                        NavigationLink(destination: ProductView()) {
+                        NavigationLink(destination: ProductView(product: product)) {
                             ProductCardView(product: product)
                         }
                         .buttonStyle(PlainButtonStyle())
@@ -140,12 +137,7 @@ struct HomeView: View{
                         // Toggle state
                         isWishlisted.toggle()
                         
-                        // Call function to update wishlist persistence
-//                        if isWishlisted {
-//                            addToWishlist(product: product)
-//                        } else {
-//                            removeFromWishlist(product: product)
-//                        }
+                   
                     } label: {
                         Image(systemName: isWishlisted ? "heart.fill" : "heart")
                             .resizable()

@@ -22,9 +22,11 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 struct BazzarApp: App {
     
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
+    @StateObject private var cartManager = CartManager()
     var body: some Scene {
         WindowGroup {
             RootView()
+                .environmentObject(cartManager)
             
         }.modelContainer(for: [User.self])
     }

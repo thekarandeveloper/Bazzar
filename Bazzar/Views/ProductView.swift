@@ -5,6 +5,9 @@ struct ProductView: View {
     @State private var isWishlisted = false
     @State private var quantity = 1
     @StateObject private var razorpayManager = RazorpayManager()
+    @EnvironmentObject var cartManager: CartManager
+    var product: Product
+    
     var body: some View {
         VStack(spacing: 0) {
             
@@ -123,18 +126,22 @@ struct ProductView: View {
             // Bottom Buttons
             HStack(spacing: 12) {
                 Button(action: {
-                    print("Add to Cart pressed")
+                    if cartManager.isInCart(product: product) {
+                        print("Already in cart")
+                    } else {
+                        cartManager.addToCart(product: product, quantity: quantity)
+                    }
                 }) {
                     HStack {
-                        Image(systemName: "cart.fill")
-                        Text("Add to Cart")
+                        Image(systemName: cartManager.isInCart(product: product) ? "checkmark" : "cart.fill")
+                        Text(cartManager.isInCart(product: product) ? "In Cart" : "Add to Cart")
                             .fontWeight(.semibold)
                     }
                     .frame(maxWidth: .infinity)
                     .padding()
-                    .background(Color.gray.opacity(0.2))
-                    .foregroundColor(.black)
-                    .cornerRadius(10) // rounded corners
+                    .background(cartManager.isInCart(product: product) ? Color.green.opacity(0.8) : Color.gray.opacity(0.2))
+                    .foregroundColor(cartManager.isInCart(product: product) ? .white : .black)
+                    .cornerRadius(10)
                 }
                 
                 Button(action: {
@@ -149,17 +156,14 @@ struct ProductView: View {
                     .padding()
                     .background(Color.orange)
                     .foregroundColor(.white)
-                    .cornerRadius(10) // rounded corners
+                    .cornerRadius(10)
                 }
             }
-            .frame(height: 50) // proper button height
+            .frame(height: 50)
             .padding(.horizontal)
         }
         .toolbar(.hidden, for: .navigationBar)
         .toolbar(.hidden, for: .tabBar)
         
     }
-}
-#Preview{
-    ProductView()
 }
