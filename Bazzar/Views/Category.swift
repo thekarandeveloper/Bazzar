@@ -11,26 +11,22 @@ struct CategoryView: View {
         ("Accessories", "girlPhoto")
     ]
     
-    let columns = [
-        GridItem(.flexible()),
-        GridItem(.flexible()),
-        GridItem(.flexible())
-    ]
+    // 3 equal columns with fixed spacing
+    let columns = Array(repeating: GridItem(.flexible(), spacing: 12), count: 3)
     
-    // Assuming you have all products
     let allProducts: [Product] = DataManager.shared.products
     
     var body: some View {
-        
-        ZStack{
-            Color("backgroundColor").ignoresSafeArea()
-            VStack{
-                
+        ZStack {
+            Color("backgroundColor")
+                .ignoresSafeArea()
+            
+            VStack {
                 // Navbar
                 CustomNavigationBarView(selectedTab: .home)
                 
                 ScrollView {
-                    LazyVGrid(columns: columns, spacing: 16) {
+                    LazyVGrid(columns: columns, spacing: 12) {
                         ForEach(categories, id: \.0) { category in
                             NavigationLink {
                                 ProductListView(
@@ -41,18 +37,14 @@ struct CategoryView: View {
                             } label: {
                                 CategoryCardView(name: category.0, imageName: category.1)
                             }
-                            .buttonStyle(PlainButtonStyle()) 
+                            .buttonStyle(PlainButtonStyle())
                         }
                     }
-                   
+                    
                 }
-              
-            }.padding(20)
-            
+            }
+            .padding(12)
         }
-          
-      
-    
     }
 }
 
@@ -62,26 +54,33 @@ struct CategoryCardView: View {
     var imageName: String
     
     var body: some View {
-        ZStack(alignment: .bottomLeading) {
-            Rectangle()
-                .fill(Color.white)
-                .cornerRadius(12)
-                
-            VStack(alignment: .center,spacing: 10){
-                Image(imageName)
-                    .resizable()
-                    .scaledToFill()
-                    .frame(height: 50)
-                    .clipped()
-                    .cornerRadius(12)
-                
-                Text(name)
-                    .font(.headline)
-                    .foregroundColor(.white)
-                    .padding(8)
-            }
-        
+        VStack(spacing: 0) {
+            // Image top — fix height aur width grid ke according
+            Image(imageName)
+                .resizable()
+                .frame(maxWidth: .infinity)   // stretch karega jitna cell ka width hai
+                .frame(height: 80)           // fixed height
+                .clipped()                   
+            Spacer()
+           
+            Text(name)
+                .font(.subheadline)
+                .fontWeight(.semibold)
+                .foregroundColor(.black)
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 12)
+                .background(Color.white)
+            Spacer().frame(height: 5)
         }
-        .frame(height: 160)
+        .frame(height: 120)
+        
+        .background(Color.white)
+        .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+        .shadow(color: .black.opacity(0.05), radius: 3, x: 0, y: 2)
     }
+}
+#Preview {
+    CategoryView()
+        .environmentObject(CartManager())
+        .environmentObject(WishlistManager())
 }
