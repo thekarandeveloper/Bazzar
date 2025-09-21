@@ -17,6 +17,8 @@ struct SelectAddressView: View {
     @State private var showAlert = false
     @State private var inCart = false
     @StateObject private var razorpayManager = RazorpayManager()
+    @EnvironmentObject var orderManager: OrderManager
+    
     var product: Product
     var body: some View {
         VStack {
@@ -76,6 +78,35 @@ struct SelectAddressView: View {
             }
             .padding()
             .disabled(selectedAddressID == nil)
+        }.navigationDestination(isPresented: Binding(
+            get: {
+                if case .success = razorpayManager.paymentStatus { return true }
+                if case .failure = razorpayManager.paymentStatus { return true }
+                return false
+            },
+            set: { _ in }
+        )) {
+            // Only return a view here
+            Group {
+                switch razorpayManager.paymentStatus {
+                case .success(let id):
+                    PaymentSuccessView(paymentID: id)
+                        .onAppear {
+                            orderManager.addOrder(product: product, amount: product.price, status: .success(paymentID: id))
+                           
+                        }
+
+                case .failure(let error):
+                    PaymentFailureView(errorMessage: error)
+                        .onAppear {
+                            orderManager.addOrder(product: product, amount: product.price, status: .failure(error: error))
+                         
+                        }
+
+                default:
+                    EmptyView()
+                }
+            }
         }
         .navigationTitle("Select Address")
         .navigationBarTitleDisplayMode(.inline)
@@ -114,5 +145,89 @@ struct AddressCard: View {
                 .background(RoundedRectangle(cornerRadius: 12).fill(Color.white))
         )
         .shadow(color: .black.opacity(0.05), radius: 3, x: 0, y: 2)
+    }
+}
+
+struct PaymentSuccessView: View {
+    let paymentID: String
+    @Environment(\.dismiss) var dismiss
+    @EnvironmentObject var orderManager: OrderManager
+   
+    @State private var show = false
+    
+    var body: some View {
+        ZStack {
+            Color.black.opacity(0.4).ignoresSafeArea()
+            
+            VStack(spacing: 20) {
+                Image(systemName: "checkmark.circle.fill")
+                    .font(.system(size: 100))
+                    .foregroundColor(.green)
+                    .scaleEffect(show ? 1 : 0.5)
+                    .animation(.spring(response: 0.5), value: show)
+                
+                Text("Payment Successful!")
+                    .font(.title2)
+                    .bold()
+                    .foregroundColor(.green)
+                
+                Text("Transaction ID:\n\(paymentID)")
+                    .font(.subheadline)
+                    .foregroundColor(.gray)
+                    .multilineTextAlignment(.center)
+            }
+            .padding(30)
+            .background(Color.white)
+            .cornerRadius(20)
+            .shadow(radius: 10)
+            .onAppear {
+                show = true
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                    dismiss()
+                }
+            }
+        }
+    }
+}
+
+struct PaymentFailureView: View {
+    let errorMessage: String
+    @Environment(\.dismiss) var dismiss
+    @EnvironmentObject var orderManager: OrderManager
+   
+    @State private var show = false
+    
+    var body: some View {
+        ZStack {
+            Color.black.opacity(0.4).ignoresSafeArea()
+            
+            VStack(spacing: 20) {
+                Image(systemName: "xmark.octagon.fill")
+                    .font(.system(size: 100))
+                    .foregroundColor(.red)
+                    .scaleEffect(show ? 1 : 0.5)
+                    .animation(.spring(response: 0.5), value: show)
+                
+                Text("Payment Failed")
+                    .font(.title2)
+                    .bold()
+                    .foregroundColor(.red)
+                
+                Text(errorMessage)
+                    .font(.subheadline)
+                    .foregroundColor(.gray)
+                    .multilineTextAlignment(.center)
+            }
+            .padding(30)
+            .background(Color.white)
+            .cornerRadius(20)
+            .shadow(radius: 10)
+            .onAppear {
+                show = true
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                    dismiss()
+                }
+            }
+        }
     }
 }

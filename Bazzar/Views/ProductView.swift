@@ -8,6 +8,7 @@ struct ProductView: View {
    
     @EnvironmentObject var cartManager: CartManager
     @EnvironmentObject var wishListManager: WishlistManager
+    @EnvironmentObject var orderManager: OrderManager
     
     var product: Product
     
@@ -149,7 +150,24 @@ struct ProductView: View {
             .padding(16)
             // Bottom Buttons
             HStack(spacing: 12) {
-                Button(action: {
+                
+                if orderManager.isProductOrdered(product: product) {
+                       // Product already ordered
+                       Button(action: {
+                           print("Product already ordered")
+                       }) {
+                           HStack {
+                               Image(systemName: "checkmark")
+                               Text("Ordered")
+                                   .fontWeight(.semibold)
+                           }
+                           .frame(maxWidth: .infinity)
+                           .padding()
+                           .background(Color.green)
+                           .foregroundColor(.white)
+                           .cornerRadius(10)
+                       }
+                } else {  Button(action: {
                     if cartManager.isInCart(product: product) {
                         print("Already in cart")
                     } else {
@@ -187,7 +205,8 @@ struct ProductView: View {
                        }
                        .navigationDestination(isPresented: $goToSelectAddress) {
                            SelectAddressView(product: product)
-                       }
+                       }}
+              
             }
             .frame(height: 50)
             .padding(.horizontal)

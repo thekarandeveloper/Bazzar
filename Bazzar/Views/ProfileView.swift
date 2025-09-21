@@ -149,25 +149,6 @@ struct LogoutButton: View {
     }
 }
 
-// MARK: - Placeholder Views for Navigation
-struct OrdersView: View {
-    var body: some View {
-        Text("Orders Screen")
-            .font(.title)
-            .navigationTitle("Orders")
-            .navigationBarTitleDisplayMode(.inline)
-    }
-}
-
-struct AddressesView: View {
-    var body: some View {
-        Text("Addresses Screen")
-            .font(.title)
-            .navigationTitle("Addresses")
-            .navigationBarTitleDisplayMode(.inline)
-    }
-}
-
 #Preview {
     ProfileView()
 }
