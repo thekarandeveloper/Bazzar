@@ -1,177 +1,171 @@
 //
 //  ProfileView.swift
-//  Bazzar
+//  MoneyMate
 //
-//  Created by Karan Kumar on 18/09/25.
+//  Created by Karan Kumar on 15/09/25.
 //
+
 import SwiftUI
 import FirebaseAuth
-
-struct ProfileView: View {
+import SwiftData
+struct ProfileView: View{
     
-    @State private var showSettings = false
     @Environment(\.dismiss) private var dismiss
-    
-    var body: some View {
-        // Navbar
-        CustomNavigationBarView(selectedTab: .home)
+    @Environment(\.modelContext) private var context
+   
+    var body: some View{
+     
+        VStack {
+            Spacer().frame(height: 20)
+            avatarView()
+            ProfileDetails()
+            Spacer()
+            LogoutButton{
+                logout()
+            }.padding()
+        }.padding(20)
         
-        ScrollView(showsIndicators: false) {
-            
-            VStack(spacing: 30) {
-                
-                // Header Banner with Profile Image
-                ZStack(alignment: .bottom) {
-                    LinearGradient(colors: [Color.orange.opacity(0.8), Color.orange.opacity(0.5)],
-                                   startPoint: .topLeading,
-                                   endPoint: .bottomTrailing)
-                        .frame(height: 220)
-                        .cornerRadius(20)
-                        .padding(.horizontal)
-                    
-                    VStack(spacing: 8) {
-                        Image("girlPhoto")
-                            .resizable()
-                            .scaledToFill()
-                            .frame(width: 110, height: 110)
-                            .clipShape(Circle())
-                            .overlay(Circle().stroke(Color.white, lineWidth: 4))
-                            .shadow(radius: 5)
-                        
-                        Text("Alex Johnson")
-                            .font(.title2)
-                            .fontWeight(.bold)
-                            .foregroundColor(.white)
-                        
-                        Text("alex.johnson@example.com")
-                            .font(.subheadline)
-                            .foregroundColor(.white.opacity(0.9))
-                    }
-                    .offset(y: 50)
-                }
-                .padding(.bottom, 60)
-                
-                // Statistics Section
-                HStack(spacing: 16) {
-                    StatCard(number: "12", title: "Orders", color: .orange)
-                    StatCard(number: "8", title: "Wishlist", color: .pink)
-                    StatCard(number: "5", title: "Favorites", color: .purple)
-                    StatCard(number: "3", title: "Cart", color: .green)
-                }
-              
-                // Quick Actions
-                VStack(spacing: 16) {
-                    ActionButton(title: "Edit Profile", icon: "pencil", color: .orange) {
-                        print("Edit Profile tapped")
-                    }
-                    ActionButton(title: "Manage Addresses", icon: "map.fill", color: .blue) {
-                        print("Manage Addresses tapped")
-                    }
-                    ActionButton(title: "Payment Methods", icon: "creditcard.fill", color: .green) {
-                        print("Payment Methods tapped")
-                    }
-                    ActionButton(title: "Order History", icon: "bag.fill", color: .purple) {
-                        print("Order History tapped")
-                    }
-                    ActionButton(title: "Settings", icon: "gearshape.fill", color: .gray) {
-                        print("Settings tapped")
-                    }
-                    ActionButton(title: "Logout", icon: "arrowshape.turn.up.left", color: .red) {
-                        do {
-                            try Auth.auth().signOut()
-                            dismiss() // ya navigate to login screen
-                        } catch {
-                            print("Error signing out: \(error.localizedDescription)")
-                        }
-                    }
-                }
-                
-                // Rewards / Loyalty Section
-                VStack(alignment: .leading, spacing: 12) {
-                    Text("Rewards & Loyalty")
-                        .font(.headline)
-                        .padding(.bottom, 4)
-                    
-                    HStack {
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text("Points: 250")
-                                .font(.subheadline)
-                                .fontWeight(.medium)
-                            Text("Next reward at 500 points")
-                                .font(.caption2)
-                                .foregroundColor(.gray)
-                        }
-                        Spacer()
-                        Image(systemName: "gift.fill")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 40, height: 40)
-                            .foregroundColor(.orange)
-                    }
-                    .padding()
-                    .background(Color.orange.opacity(0.1))
-                    .cornerRadius(12)
-                }
-              
-                Spacer(minLength: 50)
+        
+    }
+    func logout() {
+        Task { @MainActor in
+            // Sign out from Firebase Auth
+            do {
+                try Auth.auth().signOut()
+                print(" User Logged Out from Firebase")
+            } catch let error as NSError {
+                print("❌ Error signing out: \(error.localizedDescription)")
             }
-            .padding(.top, 20)
+            
+            // Clear SwiftData (local persistence)
+            
+            let fetchRequest = FetchDescriptor<User>()
+            do {
+                let users = try context.fetch(fetchRequest)
+                for user in users {
+                    context.delete(user)
+                }
+                try context.save()
+                print("SwiftData cleared")
+            } catch {
+                print("❌ Error clearing SwiftData: \(error)")
+            }
+            
+            // Clear AppStorage / UserDefaults
+            UserDefaults.standard.removeObject(forKey: "selectedCurrency")
+            UserDefaults.standard.removeObject(forKey: "isDarkMode")
+            UserDefaults.standard.removeObject(forKey: "notificationsEnabled")
+            print("AppStorage cleared")
+            
+         
+            // Update UI
+//            isAuthenticated = false
         }
-        .edgesIgnoringSafeArea(.top)
     }
 }
 
-// MARK: - Action Button (with closure)
-struct ActionButton: View {
-    var title: String
-    var icon: String
-    var color: Color
-    var action: () -> Void   // 👈 added closure
+struct avatarView: View{
+    @Query var user: [User]
     
+    var personalInfo: User {
+           if let firstUser = user.first {
+               return firstUser
+           } else {
+              
+               return User(id: "0", name: "User Name", email: "example@example.com", lastUpdated: Date())
+           }
+       }
+    var body: some View{
+        
+       
+            VStack(spacing: 20){
+                ZStack{
+                   Circle()
+                        .fill(Color("secondaryBackground"))
+                        .frame(width: 100, height: 100)
+                      
+
+                    Image(systemName: "person.fill")
+                        .font(.system(size: 34, weight: .medium))
+                        .foregroundColor(.blue)
+                }
+                
+                VStack {
+                    Text("\(personalInfo.name)")
+                        .font(.headline)
+                    Text("Joined \(personalInfo.lastUpdated.formatted(date: .abbreviated, time: .omitted))")
+                        .font(.callout)
+                }
+                
+            }
+            
+        
+        
+       
+        
+       
+    }
+    
+}
+
+import SwiftUI
+
+struct ProfileDetails: View {
+    @Query var user: [User]
+    
+    var personalInfo: [(String, String)]{
+        [
+            ("Name", user.first?.name ?? "User Name"),
+            ("Email", user.first?.email ?? "Unknown Email")
+        ]
+    }
+    
+    
+    var body: some View {
+        List {
+            Section(header: Text("Personal Info").font(.headline)) {
+                ForEach(personalInfo, id: \.0) { item in
+                    HStack {
+                        Text(item.0)
+                            .foregroundColor(Color("Text"))
+                        Spacer()
+                        Text(item.1)
+                            .foregroundColor(Color("Text"))
+                            .fontWeight(.semibold)
+                    }
+                    .padding(.vertical, 8)
+                    .listRowBackground(Color("secondaryBackground"))
+                }.background(Color("secondaryBackground"))
+            }
+
+        }
+        .listStyle(.insetGrouped)
+        
+        .scrollContentBackground(.hidden)
+       
+    }
+}
+
+
+struct LogoutButton: View {
+    var action: () -> Void  // closure to handle logout
+
     var body: some View {
         Button(action: action) {
             HStack {
-                Image(systemName: icon)
-                    .foregroundColor(color)
-                    .frame(width: 24)
-                
-                Text(title)
-                    .foregroundColor(.primary)
-                    .fontWeight(.medium)
-                
-                Spacer()
-                
-                if title != "Logout" {
-                    Image(systemName: "chevron.right")
-                        .foregroundColor(.gray)
-                        .font(.caption)
-                }
+                Image(systemName: "power")
+                    .foregroundColor(.red)
+                Text("Logout")
+                    .foregroundColor(.red)
+                    .bold()
             }
             .padding()
-            .background(Color.gray.opacity(0.1))
+            .frame(maxWidth: .infinity)
+            .background(Color("secondaryBackground"))
             .cornerRadius(12)
         }
     }
-}
-// MARK: - Stat Card
-struct StatCard: View {
-    var number: String
-    var title: String
-    var color: Color
     
-    var body: some View {
-        VStack {
-            Text(number)
-                .font(.title2)
-                .fontWeight(.bold)
-                .foregroundColor(color)
-            Text(title)
-                .font(.subheadline)
-                .foregroundColor(.gray)
-        }
-        .frame(maxWidth: .infinity)
-        .padding()
-        .background(Color.gray.opacity(0.1))
-        .cornerRadius(12)
-    }
+   
+    
 }
