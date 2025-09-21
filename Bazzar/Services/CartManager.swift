@@ -21,7 +21,7 @@ class CartManager: ObservableObject {
         if let index = items.firstIndex(where: { $0.product.id == product.id }) {
             items[index].quantity += quantity
         } else {
-            items.append(CartItem(product: product, quantity: quantity))
+            items.append(CartItem(id: product.id ?? UUID().uuidString, product: product, quantity: quantity))
         }
     }
 

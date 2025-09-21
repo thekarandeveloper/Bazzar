@@ -58,7 +58,7 @@ class User: FirestoreModel, Identifiable, Codable {
 
 // MARK: - Product Model
 struct Product: Identifiable, Codable, Hashable {
-    @DocumentID var id: String?  // Firestore document ID
+    @DocumentID var id: String? = UUID().uuidString  // Firestore document ID
     var name: String
     var category: String
     var price: Double
@@ -76,7 +76,7 @@ struct CartItem: Identifiable, Codable, Hashable {
     var product: Product
     var quantity: Int
     
-    init(id: String = UUID().uuidString, product: Product, quantity: Int = 1) {
+    init(id: String, product: Product, quantity: Int = 1) {
         self.id = id
         self.product = product
         self.quantity = quantity

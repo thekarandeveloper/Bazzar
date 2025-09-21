@@ -1,15 +1,9 @@
-//
-//  CartView.swift
-//  Bazzar
-//
-//  Created by Karan Kumar on 18/09/25.
-//
-
 import SwiftUI
 
 struct CartView: View {
     @EnvironmentObject var cartManager: CartManager
     @Environment(\.dismiss) private var dismiss
+    @StateObject private var razorpayManager = RazorpayManager()
     var body: some View {
         VStack(spacing: 0) {
             
@@ -31,6 +25,7 @@ struct CartView: View {
                     VStack(spacing: 16) {
                         ForEach(cartManager.items) { item in
                             CartItemCard(item: item)
+                                .environmentObject(cartManager)
                         }
                     }
                     .padding()
@@ -49,7 +44,7 @@ struct CartView: View {
                     }
                     
                     Button(action: {
-                        print("Proceed to checkout")
+                        razorpayManager.startPayment(amount: cartManager.totalAmount(), productName: "Cart")
                     }) {
                         Text("Checkout")
                             .font(.headline)
@@ -82,61 +77,70 @@ struct CartItemCard: View {
     var item: CartItem
     
     var body: some View {
-        HStack(spacing: 12) {
+        HStack(spacing: 16) {
             
             // Product Image
-            AsyncImage(url: URL(string: item.product.imageUrl)) { phase in
-                if let image = phase.image {
-                    image.resizable().scaledToFill()
-                } else if phase.error != nil {
-                    Color.red.opacity(0.3)
-                } else {
-                    ProgressView()
-                }
-            }
-            .frame(width: 80, height: 80)
-            .clipShape(RoundedRectangle(cornerRadius: 10))
-            
+            Image(item.product.imageUrl)
+                .resizable()
+                .scaledToFill()
+                .frame(width: 120, height: 90)
+                .clipShape(RoundedRectangle(cornerRadius: 12))
+                
+           
             // Product Details
             VStack(alignment: .leading, spacing: 6) {
                 Text(item.product.name)
                     .font(.headline)
-                    .lineLimit(1)
+                    .lineLimit(2)
+                    .foregroundColor(.primary)
                 
                 Text("$\(item.product.price, specifier: "%.2f")")
                     .font(.subheadline)
-                    .foregroundColor(.orange)
+                    .fontWeight(.semibold)
+                    .foregroundColor(.gray)
                 
-                // Quantity dropdown
-                Picker("Qty", selection: Binding(
-                    get: { item.quantity },
-                    set: { newQty in
-                        cartManager.updateQuantity(productID: item.product.id!, quantity: newQty)
+                HStack {
+                    // Delete Button
+                    Button(action: {
+                        cartManager.removeFromCart(productID: item.product.id!)
+                    }) {
+                        Image(systemName: "trash.fill")
+                            .foregroundColor(.gray)
+                            .frame(width: 52, height: 32)
+                            .background(Color.gray.opacity(0.2))
+                            .cornerRadius(6)
                     }
-                )) {
-                    ForEach(1..<11) { qty in
-                        Text("\(qty)").tag(qty)
+                    
+                    Spacer()
+                    
+                    // Quantity Picker
+                    Picker("", selection: Binding(
+                        get: { item.quantity },
+                        set: { newQty in
+                            cartManager.updateQuantity(productID: item.product.id!, quantity: newQty)
+                        }
+                    )) {
+                        ForEach(1..<11) { qty in
+                            Text("\(qty)").tag(qty)
+                                .foregroundColor(.black)
+                        }
                     }
+                    .pickerStyle(MenuPickerStyle())
+                   
+                    .frame(width: 70)
+                    .padding(.horizontal, 4)
+                    .padding(.vertical, 2)
+                    .background(Color.gray.opacity(0.2))
+                    
+                    .cornerRadius(6)
                 }
-                .pickerStyle(MenuPickerStyle())
-                .frame(width: 100)
-                .background(Color.gray.opacity(0.2))
-                .cornerRadius(8)
-            }
+            }.frame(maxWidth:.infinity)
             
-            Spacer()
-            
-            // Remove button
-            Button {
-                cartManager.removeFromCart(productID: item.product.id!)
-            } label: {
-                Image(systemName: "trash.fill")
-                    .foregroundColor(.red)
-                    .padding(8)
-            }
+           
         }
-        .padding()
-        .background(Color.gray.opacity(0.1))
-        .cornerRadius(12)
+        
+        .background(Color.white)
+        .cornerRadius(16)
+        
     }
 }
