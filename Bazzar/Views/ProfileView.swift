@@ -1,154 +1,136 @@
-//
-//  ProfileView.swift
-//  MoneyMate
-//
-//  Created by Karan Kumar on 15/09/25.
-//
-
 import SwiftUI
 import FirebaseAuth
 import SwiftData
-struct ProfileView: View{
-    
+
+struct ProfileView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var context
-   
-    var body: some View{
-     
-        VStack {
-            Spacer().frame(height: 20)
-            avatarView()
-            ProfileDetails()
-            Spacer()
-            LogoutButton{
-                logout()
-            }.padding()
-        }.padding(20)
-        
-        
+
+    var body: some View {
+        NavigationStack { // Wrap in NavigationStack for navigation
+            VStack(spacing: 24) {
+                
+                Spacer().frame(height: 20)
+                
+                // Avatar + Name
+                AvatarView()
+                
+                // Quick Actions
+                VStack(spacing: 12) {
+                    NavigationLink(destination: OrdersView()) {
+                        ProfileActionRow(title: "Orders", icon: "bag.fill")
+                    }
+                    NavigationLink(destination: WishlistView()) {
+                        ProfileActionRow(title: "Wishlist", icon: "heart.fill")
+                    }
+                    NavigationLink(destination: AddressesView()) {
+                        ProfileActionRow(title: "Addresses", icon: "map.fill")
+                    }
+                }
+                .padding(.horizontal)
+                
+                Spacer()
+                
+                // Logout Button
+                LogoutButton {
+                    logout()
+                }
+                .padding(.horizontal)
+                
+                Spacer()
+            }
+            .padding(.vertical, 20)
+            .background(Color("backgroundColor").ignoresSafeArea())
+            .navigationTitle("Profile")
+            .navigationBarTitleDisplayMode(.inline)
+        }
     }
+    
     func logout() {
         Task { @MainActor in
-            // Sign out from Firebase Auth
             do {
                 try Auth.auth().signOut()
-                print(" User Logged Out from Firebase")
-            } catch let error as NSError {
-                print("❌ Error signing out: \(error.localizedDescription)")
+                print("User logged out")
+            } catch {
+                print("❌ Error: \(error.localizedDescription)")
             }
             
-            // Clear SwiftData (local persistence)
-            
+            // Clear SwiftData
             let fetchRequest = FetchDescriptor<User>()
             do {
                 let users = try context.fetch(fetchRequest)
-                for user in users {
-                    context.delete(user)
-                }
+                for user in users { context.delete(user) }
                 try context.save()
                 print("SwiftData cleared")
             } catch {
-                print("❌ Error clearing SwiftData: \(error)")
+                print("❌ SwiftData error")
             }
             
-            // Clear AppStorage / UserDefaults
+            // Clear UserDefaults
             UserDefaults.standard.removeObject(forKey: "selectedCurrency")
             UserDefaults.standard.removeObject(forKey: "isDarkMode")
             UserDefaults.standard.removeObject(forKey: "notificationsEnabled")
-            print("AppStorage cleared")
             
-         
-            // Update UI
-//            isAuthenticated = false
+            dismiss()
         }
     }
 }
 
-struct avatarView: View{
+// MARK: - Avatar View
+struct AvatarView: View {
     @Query var user: [User]
-    
+
     var personalInfo: User {
-           if let firstUser = user.first {
-               return firstUser
-           } else {
-              
-               return User(id: "0", name: "User Name", email: "example@example.com", lastUpdated: Date())
-           }
-       }
-    var body: some View{
-        
-       
-            VStack(spacing: 20){
-                ZStack{
-                   Circle()
-                        .fill(Color("secondaryBackground"))
-                        .frame(width: 100, height: 100)
-                      
-
-                    Image(systemName: "person.fill")
-                        .font(.system(size: 34, weight: .medium))
-                        .foregroundColor(.blue)
-                }
-                
-                VStack {
-                    Text("\(personalInfo.name)")
-                        .font(.headline)
-                    Text("Joined \(personalInfo.lastUpdated.formatted(date: .abbreviated, time: .omitted))")
-                        .font(.callout)
-                }
-                
-            }
-            
-        
-        
-       
-        
-       
+        user.first ?? User(id: "0", name: "User Name", email: "example@example.com", lastUpdated: Date())
     }
-    
-}
 
-import SwiftUI
-
-struct ProfileDetails: View {
-    @Query var user: [User]
-    
-    var personalInfo: [(String, String)]{
-        [
-            ("Name", user.first?.name ?? "User Name"),
-            ("Email", user.first?.email ?? "Unknown Email")
-        ]
-    }
-    
-    
     var body: some View {
-        List {
-            Section(header: Text("Personal Info").font(.headline)) {
-                ForEach(personalInfo, id: \.0) { item in
-                    HStack {
-                        Text(item.0)
-                            .foregroundColor(Color("Text"))
-                        Spacer()
-                        Text(item.1)
-                            .foregroundColor(Color("Text"))
-                            .fontWeight(.semibold)
-                    }
-                    .padding(.vertical, 8)
-                    .listRowBackground(Color("secondaryBackground"))
-                }.background(Color("secondaryBackground"))
+        VStack(spacing: 12) {
+            ZStack {
+                Circle()
+                    .fill(Color("secondaryBackground"))
+                    .frame(width: 100, height: 100)
+                Image(systemName: "person.fill")
+                    .font(.system(size: 40))
+                    .foregroundColor(.blue)
             }
 
+            Text(personalInfo.name)
+                .font(.title2)
+                .fontWeight(.bold)
+            Text("Joined \(personalInfo.lastUpdated.formatted(date: .abbreviated, time: .omitted))")
+                .font(.callout)
+                .foregroundColor(.gray)
         }
-        .listStyle(.insetGrouped)
-        
-        .scrollContentBackground(.hidden)
-       
     }
 }
 
+// MARK: - Action Row
+struct ProfileActionRow: View {
+    var title: String
+    var icon: String
 
+    var body: some View {
+        HStack {
+            Image(systemName: icon)
+                .foregroundColor(.orange)
+                .frame(width: 28)
+            Text(title)
+                .foregroundColor(.primary)
+                .fontWeight(.medium)
+            Spacer()
+            Image(systemName: "chevron.right")
+                .foregroundColor(.gray)
+        }
+        .padding()
+        .background(Color("secondaryBackground"))
+        .cornerRadius(12)
+    }
+}
+
+// MARK: - Logout Button
 struct LogoutButton: View {
-    var action: () -> Void  // closure to handle logout
+    var action: () -> Void
 
     var body: some View {
         Button(action: action) {
@@ -158,14 +140,34 @@ struct LogoutButton: View {
                 Text("Logout")
                     .foregroundColor(.red)
                     .bold()
+                Spacer()
             }
             .padding()
-            .frame(maxWidth: .infinity)
             .background(Color("secondaryBackground"))
             .cornerRadius(12)
         }
     }
-    
-   
-    
+}
+
+// MARK: - Placeholder Views for Navigation
+struct OrdersView: View {
+    var body: some View {
+        Text("Orders Screen")
+            .font(.title)
+            .navigationTitle("Orders")
+            .navigationBarTitleDisplayMode(.inline)
+    }
+}
+
+struct AddressesView: View {
+    var body: some View {
+        Text("Addresses Screen")
+            .font(.title)
+            .navigationTitle("Addresses")
+            .navigationBarTitleDisplayMode(.inline)
+    }
+}
+
+#Preview {
+    ProfileView()
 }
