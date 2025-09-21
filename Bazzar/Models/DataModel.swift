@@ -64,7 +64,7 @@ struct Product: Identifiable, Codable, Hashable {
     var price: Double
     var oldPrice: Double
     var imageUrl: String
-    
+    var desc:String
     // Local-only fields
     var isInCart: Bool = false
     var isInWishlist: Bool = false

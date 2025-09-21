@@ -6,6 +6,8 @@ struct ProductView: View {
     @State private var quantity = 1
     @StateObject private var razorpayManager = RazorpayManager()
     @EnvironmentObject var cartManager: CartManager
+    @EnvironmentObject var wishListManager: WishlistManager
+    
     var product: Product
     
     var body: some View {
@@ -34,18 +36,27 @@ struct ProductView: View {
                 Spacer()
                 
                 Button(action: {
-                    razorpayManager.startPayment(amount: 69.0, productName: "Cotton T-Shirt")
-
-                }) {
-                    Image(systemName: "cart")
-                        .resizable()
-                        .foregroundStyle(Color.black)
-                        .scaledToFit()
-                        .frame(width: 20, height: 20)
-                        .padding(8)
-                        .background(Color.gray.opacity(0.2))
-                        .cornerRadius(8)
-                }
+                        if wishListManager.isInWishlist(product: product) {
+                            wishListManager.remove(productID: product.id!)
+                            isWishlisted = false
+                        } else {
+                            wishListManager.add(product: product)
+                            isWishlisted = true
+                        }
+                    }) {
+                        Image(systemName: isWishlisted || wishListManager.isInWishlist(product: product) ? "heart.fill" : "heart")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 20, height: 20)
+                            .padding(8)
+                            .foregroundColor(isWishlisted || wishListManager.isInWishlist(product: product) ? .red : .black)
+                            .background(Color.gray.opacity(0.2))
+                            .cornerRadius(8)
+                    }
+                    .onAppear {
+                        // initialize state
+                        isWishlisted = wishListManager.isInWishlist(product: product)
+                    }
             }
             .padding(.horizontal)
             .frame(height: 44)
@@ -53,26 +64,38 @@ struct ProductView: View {
             // Scroll Content
             ScrollView(.vertical, showsIndicators: false) {
                 VStack (alignment: .leading, spacing: 15){
-                    Rectangle()
-                        .fill(Color.orange.opacity(0.3))
-                        .frame(height: 350)
-                        .cornerRadius(12)
+                    ZStack {
+                        // Background container
+                        RoundedRectangle(cornerRadius: 12)
+                            .fill(Color.orange.opacity(0.3))
+                            .frame(height: 350)
+                        
+                        // Image
+                        Image("\(product.imageUrl)")
+                            .resizable()
+                            .scaledToFill()
+                            .frame(height: 350)
+                            .frame(maxWidth: .infinity)
+                            .clipped()
+                            .cornerRadius(12)
+                    }
                       
-                    
+                   
                     VStack(alignment: .leading, spacing: 0){
                         HStack{
-                            Text("Product Title")
+                            Text("\( product.name)")
                                 .font(.title2)
                                 .fontWeight(.bold)
                                 .padding(.top)
                             Spacer()
-                            Text("$86.00")
+                            
+                            Text("\(product.price)")
                                 .font(.title2)
                                 .fontWeight(.bold)
                                 .padding(.top)
                         }
                         Spacer().frame(maxHeight: 20)
-                        Text("Product Title")
+                        Text("Updated Price")
                             .font(.caption)
                     }
                     
@@ -116,7 +139,7 @@ struct ProductView: View {
                     Text("Description")
                         .font(.caption)
                     
-                    Text("This is the product description. Add more details here.This is the product description. Add more details here.This is the product description. Add more details here.This is the product description. Add more details here. Add more details here.This is the product description. Add more details here.This is the product description. Add more details here.")
+                    Text("\(product.desc)")
                         .font(.callout)
                         .foregroundColor(.secondary)
                 }
@@ -143,9 +166,9 @@ struct ProductView: View {
                     .foregroundColor(cartManager.isInCart(product: product) ? .white : .black)
                     .cornerRadius(10)
                 }
-                
+               
                 Button(action: {
-                    print("Buy Now pressed")
+                    razorpayManager.startPayment(amount: product.price, productName: "\(product.name)")
                 }) {
                     HStack {
                         Image(systemName: "creditcard.fill")

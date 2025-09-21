@@ -15,6 +15,7 @@ class ProductEntity {
     @Attribute var category: String
     @Attribute var price: Double
     @Attribute var oldPrice: Double
+    @Attribute var desc: String
     @Attribute var imageUrl: String
     @Attribute var isInCart: Bool
     @Attribute var isInWishlist: Bool
@@ -30,6 +31,7 @@ class ProductEntity {
         self.imageUrl = product.imageUrl
         self.isInCart = product.isInCart
         self.isInWishlist = product.isInWishlist
+        self.desc = product.desc
     }
     
     func toProduct() -> Product {
@@ -40,6 +42,7 @@ class ProductEntity {
             price: self.price,
             oldPrice: self.oldPrice,
             imageUrl: self.imageUrl,
+            desc: self.desc,
             isInCart: self.isInCart,
             isInWishlist: self.isInWishlist
         )

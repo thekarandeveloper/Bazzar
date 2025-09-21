@@ -1,10 +1,3 @@
-//
-//  ContentView.swift
-//  Bazzar
-//
-//  Created by Karan Kumar on 18/09/25.
-//
-
 import SwiftUI
 import SwiftData
 
@@ -20,6 +13,7 @@ struct ContentView: View {
                 HomeView()
                     .padding(20)
                     .navigationBarBackButtonHidden(true)
+                    .toolbar(.hidden, for: .tabBar) // hide tab bar
             }
             .tabItem {
                 Label("Home", systemImage: "house.fill")
@@ -28,18 +22,19 @@ struct ContentView: View {
             // Categories Tab
             NavigationStack {
                 CategoryView()
-                    
                     .navigationBarBackButtonHidden(true)
+                    .toolbar(.hidden, for: .tabBar) // hide tab bar
             }
             .tabItem {
                 Label("Categories", systemImage: "square.grid.2x2.fill")
             }
             
-            // Cart Tab
+            // Wishlist Tab
             NavigationStack {
                 WishlistView()
                     .padding(20)
                     .navigationBarBackButtonHidden(true)
+                    .toolbar(.hidden, for: .tabBar) // hide tab bar
             }
             .tabItem {
                 Label("Wishlist", systemImage: "heart.fill")
@@ -50,11 +45,12 @@ struct ContentView: View {
                 ProfileView()
                     .padding(20)
                     .navigationBarBackButtonHidden(true)
+                    .toolbar(.hidden, for: .tabBar) // hide tab bar
             }
             .tabItem {
                 Label("Account", systemImage: "person.fill")
             }
         }
-        .accentColor(.orange) // Selected tab icon color
+        .accentColor(.orange)
     }
 }

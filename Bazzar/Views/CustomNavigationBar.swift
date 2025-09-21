@@ -11,12 +11,28 @@ struct CustomNavigationBarView: View {
     @EnvironmentObject var cartManager: CartManager
     @State var selectedTab: Tab
     @State private var goToCart = false
+    @State private var goToProfile = false
     @StateObject private var searchViewModel = SearchViewModel()
     @StateObject var searchManager = SearchManager(products: DataManager.shared.products)
     @EnvironmentObject var wishlistManager: WishlistManager
     
     var body: some View {
         HStack(spacing: 12) {
+            
+            Button {
+                   goToProfile = true
+               } label: {
+                   Image(systemName: "person.fill")
+                       .resizable()
+                       .scaledToFit()
+                       .frame(width: 24, height: 24)
+                       .foregroundColor(.gray)
+                       .padding(.vertical, 8)
+                       .padding(.horizontal, 8)
+                       .background(Color.gray.opacity(0.2))
+                       .cornerRadius(12)
+               }
+            
             // Search Bar
             SearchBarView(searchManager: searchManager)
                 .environmentObject(wishlistManager)
@@ -63,6 +79,14 @@ struct CustomNavigationBarView: View {
                 }
                
         }
+        .sheet(isPresented: $goToProfile){
+            NavigationStack {
+                    ProfileView()
+                    .navigationTitle("Profile")
+                    .navigationBarTitleDisplayMode(.inline)
+                }
+               
+        }
        
     }
 }
@@ -73,7 +97,11 @@ struct SearchBarView: View {
     
     var body: some View {
         VStack {
+            
             HStack {
+                
+              
+                
                 TextField("Search products...", text: $searchManager.query, onCommit: {
                     searchManager.performSearch()
                     goToResults = true
