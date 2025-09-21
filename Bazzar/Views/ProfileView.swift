@@ -23,7 +23,7 @@ struct ProfileView: View {
                     NavigationLink(destination: WishlistView()) {
                         ProfileActionRow(title: "Wishlist", icon: "heart.fill")
                     }
-                    NavigationLink(destination: AddressesView()) {
+                    NavigationLink(destination: AddressListView()) {
                         ProfileActionRow(title: "Addresses", icon: "map.fill")
                     }
                 }

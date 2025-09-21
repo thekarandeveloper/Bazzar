@@ -3,8 +3,9 @@ import SwiftUI
 struct ProductView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var isWishlisted = false
+    @State private var goToSelectAddress = false
     @State private var quantity = 1
-    @StateObject private var razorpayManager = RazorpayManager()
+   
     @EnvironmentObject var cartManager: CartManager
     @EnvironmentObject var wishListManager: WishlistManager
     
@@ -167,20 +168,26 @@ struct ProductView: View {
                     .cornerRadius(10)
                 }
                
-                Button(action: {
-                    razorpayManager.startPayment(amount: product.price, productName: "\(product.name)")
-                }) {
-                    HStack {
-                        Image(systemName: "creditcard.fill")
-                        Text("Buy Now")
-                            .fontWeight(.semibold)
-                    }
-                    .frame(maxWidth: .infinity)
-                    .padding()
-                    .background(Color.orange)
-                    .foregroundColor(.white)
-                    .cornerRadius(10)
-                }
+                VStack {
+                        // Buy Now Button
+                    Button(action: {
+                               goToSelectAddress = true
+                           }) {
+                               HStack {
+                                   Image(systemName: "creditcard.fill")
+                                   Text("Buy Now")
+                                       .fontWeight(.semibold)
+                               }
+                               .frame(maxWidth: .infinity)
+                               .padding()
+                               .background(Color.orange)
+                               .foregroundColor(.white)
+                               .cornerRadius(10)
+                           }
+                       }
+                       .navigationDestination(isPresented: $goToSelectAddress) {
+                           SelectAddressView(product: product)
+                       }
             }
             .frame(height: 50)
             .padding(.horizontal)

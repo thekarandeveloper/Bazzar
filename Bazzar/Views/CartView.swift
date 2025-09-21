@@ -44,7 +44,7 @@ struct CartView: View {
                     }
                     
                     Button(action: {
-                        razorpayManager.startPayment(amount: cartManager.totalAmount(), productName: "Cart")
+                      
                     }) {
                         Text("Checkout")
                             .font(.headline)

@@ -16,9 +16,7 @@ struct WishlistView: View {
     ]
     
     var body: some View {
-        // Navbar
-        CustomNavigationBarView(selectedTab: .home)
-        
+       
         ScrollView {
             if wishlistManager.items.isEmpty {
                 VStack(spacing: 12) {
@@ -41,7 +39,7 @@ struct WishlistView: View {
                 }
                 .padding()
             }
-        }
+        }.navigationTitle("Wishlist")
         
     }
 }

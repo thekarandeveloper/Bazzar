@@ -18,9 +18,15 @@ class User: FirestoreModel, Identifiable, Codable {
     var email: String
     var lastUpdated: Date = Date()
     
+    
     // Cart & Wishlist references
     var cart: [CartItem] = []
     var wishlist: [String] = [] // only product IDs for wishlist
+    
+    
+    // RELATIONSHIP: One user → many addresses
+    @Relationship var addresses: [Address] = []
+        
     
     enum CodingKeys: String, CodingKey {
         case id, name, email, lastUpdated, cart, wishlist
@@ -91,5 +97,45 @@ struct WishlistItem: Identifiable, Codable, Hashable {
     init(product: Product) {
         self.id = product.id ?? UUID().uuidString
         self.product = product
+    }
+}
+
+// MARK: - Address Model
+
+@Model
+class Address {
+    @Attribute(.unique) var id: String
+    var name: String
+    var phone: String
+    var street: String
+    var city: String
+    var state: String
+    var zip: String
+    var country: String
+    var createdAt: Date
+    
+    // RELATIONSHIP: Link to User
+    @Relationship(inverse: \User.addresses) var user: User?
+
+    init(id: String = UUID().uuidString,
+         name: String,
+         phone: String,
+         street: String,
+         city: String,
+         state: String,
+         zip: String,
+         country: String,
+         createdAt: Date = Date(),
+         user: User? = nil) {
+        self.id = id
+        self.name = name
+        self.phone = phone
+        self.street = street
+        self.city = city
+        self.state = state
+        self.zip = zip
+        self.country = country
+        self.createdAt = createdAt
+        self.user = user
     }
 }
