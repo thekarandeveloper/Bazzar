@@ -73,7 +73,7 @@ struct CustomNavigationBarView: View {
         .frame(height: 45)
         .sheet(isPresented: $goToCart){
             NavigationStack {
-                    CartView()
+                CartView()
                     .navigationTitle("Cart")
                     .navigationBarTitleDisplayMode(.inline)
                 }

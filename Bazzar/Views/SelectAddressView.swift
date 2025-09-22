@@ -15,7 +15,7 @@ struct SelectAddressView: View {
     @State private var selectedAddressID: String? = nil
     @EnvironmentObject var cartManager: CartManager
     @State private var showAlert = false
-    @State private var inCart = false
+    @State var inCart = false
     @StateObject private var razorpayManager = RazorpayManager()
     @EnvironmentObject var orderManager: OrderManager
     
@@ -54,11 +54,20 @@ struct SelectAddressView: View {
          
             Button(action: {
                 if let selected = selectedAddressID {
-                    print("Proceed with address ID: \(selected)")
+                   
                     if inCart{
-                        razorpayManager.startPayment(amount: cartManager.totalAmount(), productName: "Cart")
+                       
+                        DispatchQueue.main.async {
+                            
+                            razorpayManager.startPayment(amount: 24, productName: "Cart")
+                        }
                     } else{
-                        razorpayManager.startPayment(amount: product.price, productName: "\(product.name)")
+                        
+                        DispatchQueue.main.async {
+                            razorpayManager.startPayment(amount: product.price, productName: "\(product.name)")
+                        }
+                       
+                        
                     }
                   
                 } else {

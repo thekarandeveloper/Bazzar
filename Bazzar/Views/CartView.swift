@@ -4,6 +4,8 @@ struct CartView: View {
     @EnvironmentObject var cartManager: CartManager
     @Environment(\.dismiss) private var dismiss
     @StateObject private var razorpayManager = RazorpayManager()
+    @State private var goToSelectAddress = false
+   
     var body: some View {
         VStack(spacing: 0) {
             
@@ -44,7 +46,7 @@ struct CartView: View {
                     }
                     
                     Button(action: {
-                      
+                        goToSelectAddress = true
                     }) {
                         Text("Checkout")
                             .font(.headline)
@@ -57,6 +59,9 @@ struct CartView: View {
                 }
                 .padding()
                 .background(Color(.systemBackground))
+                .navigationDestination(isPresented: $goToSelectAddress) {
+                    SelectAddressView(inCart: true, product: DataManager.shared.products.first!)
+                }
             }
         }
         .navigationTitle("Cart")
