@@ -25,12 +25,14 @@ struct BazzarApp: App {
     @StateObject private var cartManager = CartManager()
     @StateObject private var wishlistManager = WishlistManager()
     @StateObject private var orderManager = OrderManager()
+    @StateObject private var authManager = AuthenticationManager.shared
     var body: some Scene {
         WindowGroup {
             RootView()
                 .environmentObject(cartManager)
                 .environmentObject(wishlistManager)
                 .environmentObject(orderManager)
+                .environmentObject(authManager)
         }.modelContainer(for: [User.self])
     }
     

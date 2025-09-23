@@ -14,7 +14,8 @@ import FirebaseAuth
 @MainActor
 class FirestoreManager {
     static let shared = FirestoreManager()
-    private let db = Firestore.firestore()
+    let db = Firestore.firestore()
+    
     
     private init() {}
     
@@ -72,3 +73,54 @@ class FirestoreManager {
     
 }
 
+extension FirestoreManager {
+    
+    // Delete Current User (Auth + Firestore + Local SwiftData)
+    func deleteCurrentUser(context: ModelContext, authManager: AuthenticationManager) async {
+        guard let user = Auth.auth().currentUser else { return }
+
+        do {
+            // 1. Reauthenticate first
+            switch authManager.signInMethod {
+            case .google:
+                let credential = try await authManager.getGoogleCredential()
+                try await user.reauthenticate(with: credential)
+            case .apple:
+                let credential = try await authManager.getAppleCredential() // MUST trigger UI
+                try await user.reauthenticate(with: credential)
+            case .none:
+                print("⚠️ No sign-in method stored")
+                return
+            }
+
+            // 2. Delete Firestore data
+            try await FirestoreManager.shared.db.collection("Users").document(user.uid).delete()
+
+            // 3. Delete from FirebaseAuth
+            try await user.delete()
+
+            // 4. Clear local data
+            let fetchRequest = FetchDescriptor<User>()
+            let users = try context.fetch(fetchRequest)
+            for u in users { context.delete(u) }
+            try context.save()
+
+            print("✅ User deleted successfully")
+        } catch {
+            print("❌ Reauthentication or deletion failed: \(error)")
+        }
+    }
+    // MARK: - Reauthentication
+    private func reauthenticate(user: FirebaseAuth.User, provider: AuthenticationManager.SignInMethod, authManager: AuthenticationManager) async throws {
+        switch provider {
+        case .google:
+            // Get fresh Google credential via AuthenticationManager
+            let credential = try await authManager.getGoogleCredential()
+            try await user.reauthenticate(with: credential)
+        case .apple:
+            // Get fresh Apple credential via AuthenticationManager
+            let credential = try await authManager.getAppleCredential()
+            try await user.reauthenticate(with: credential)
+        }
+    }
+}
