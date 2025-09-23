@@ -196,52 +196,42 @@ struct DeleteUserButton: View {
         }
     }
 }
-struct AppleReauthView: UIViewControllerRepresentable {
+
+struct AppleReauthView: View {
     var completion: (AuthCredential) -> Void
     
-    func makeUIViewController(context: Context) -> some UIViewController {
-        let controller = ASAuthorizationController(authorizationRequests: [ASAuthorizationAppleIDProvider().createRequest()])
-        controller.delegate = context.coordinator
-        controller.presentationContextProvider = context.coordinator
-        controller.performRequests()
-        return UIViewController()
-    }
-    
-    func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {}
-    
-    func makeCoordinator() -> Coordinator { Coordinator(completion: completion) }
-    
-    class Coordinator: NSObject, ASAuthorizationControllerDelegate, ASAuthorizationControllerPresentationContextProviding {
-        let completion: (AuthCredential) -> Void
-        init(completion: @escaping (AuthCredential) -> Void) { self.completion = completion }
-        
-        func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
-            return UIApplication.shared.windows.first { $0.isKeyWindow }!
-        }
-        
-        func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
-            guard let credential = authorization.credential as? ASAuthorizationAppleIDCredential,
-                  let tokenData = credential.identityToken else { return }
+    var body: some View {
+        VStack(spacing: 20) {
+            Text("Reauthenticate with Apple")
+                .font(.headline)
             
-            guard let tokenData = credential.identityToken,
-                  let tokenString = String(data: tokenData, encoding: .utf8) else {
-                print("❌ Unable to convert Apple identity token to String")
-                return
+            SignInWithAppleButton(.signIn) { request in
+                request.requestedScopes = [.fullName, .email]
+            } onCompletion: { result in
+                switch result {
+                case .success(let authResults):
+                    if let credential = authResults.credential as? ASAuthorizationAppleIDCredential,
+                       let tokenData = credential.identityToken,
+                       let tokenString = String(data: tokenData, encoding: .utf8) {
+                        let firebaseCredential = OAuthProvider.appleCredential(
+                            withIDToken: tokenString,
+                            rawNonce: "", // use nonce if you used during login
+                            fullName: credential.fullName
+                        )
+                        completion(firebaseCredential)
+                    }
+                case .failure(let error):
+                    print("Apple reauth failed: \(error.localizedDescription)")
+                }
             }
-
-            let firebaseCredential = OAuthProvider.appleCredential(
-                withIDToken: tokenString,  // <-- now it's String
-                rawNonce: "",               // pass nonce if used during sign-in
-                fullName: credential.fullName
-            )
-            completion(firebaseCredential)
+            .signInWithAppleButtonStyle(.black)
+            .frame(height: 50)
+            .padding()
         }
-        
-        func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: Error) {
-            print("Apple Reauth failed: \(error.localizedDescription)")
-        }
+        .padding()
     }
 }
+
 struct GoogleReauthView: View {
     var completion: (AuthCredential) -> Void
     
