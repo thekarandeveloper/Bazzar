@@ -12,7 +12,7 @@ struct ProfileView: View {
     
     @State private var showAppleReauthSheet = false
     @State private var showGoogleReauthSheet = false
-
+    @State private var showDeleteConfirmation = false
     var body: some View {
         NavigationStack {
             VStack(spacing: 24) {
@@ -31,8 +31,18 @@ struct ProfileView: View {
                 Spacer()
                 
                 DeleteUserButton {
-                    handleDelete()
-                }
+                               showDeleteConfirmation = true
+                           }
+                           .alert("Are you sure?", isPresented: $showDeleteConfirmation) {
+                               Button("Cancel", role: .cancel) {}
+                               Button("Delete", role: .destructive) {
+                                   Task {
+                                       await handleDelete()
+                                   }
+                               }
+                           } message: {
+                               Text("This will permanently delete your account, all data in Bazzar, and cannot be undone.")
+                           }
                 
                 Spacer()
                 LogoutButton{

@@ -14,6 +14,7 @@
 		CD4B28382E7C03AC0014D3B1 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = CD4B28372E7C03AC0014D3B1 /* FirebaseFirestore */; };
 		CD4B283A2E7C03AC0014D3B1 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = CD4B28392E7C03AC0014D3B1 /* FirebaseStorage */; };
 		CDA97A432E7C9F5C00BF7C9A /* RazorpayCheckout in Frameworks */ = {isa = PBXBuildFile; productRef = CDA97A422E7C9F5C00BF7C9A /* RazorpayCheckout */; };
+		CDD3D7D42E840C810049276A /* readme.md in Resources */ = {isa = PBXBuildFile; fileRef = CDD3D7D32E840C7A0049276A /* readme.md */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -37,6 +38,7 @@
 		CD4B28082E7C00B90014D3B1 /* Bazzar.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Bazzar.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CD4B28152E7C00BB0014D3B1 /* BazzarTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BazzarTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		CD4B281F2E7C00BB0014D3B1 /* BazzarUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BazzarUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		CDD3D7D32E840C7A0049276A /* readme.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = readme.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -66,6 +68,11 @@
 		CD4B28222E7C00BB0014D3B1 /* BazzarUITests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = BazzarUITests;
+			sourceTree = "<group>";
+		};
+		CDD3D7D52E840CA50049276A /* assets */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = assets;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -105,6 +112,8 @@
 		CD4B27FF2E7C00B90014D3B1 = {
 			isa = PBXGroup;
 			children = (
+				CDD3D7D52E840CA50049276A /* assets */,
+				CDD3D7D32E840C7A0049276A /* readme.md */,
 				CD4B280A2E7C00B90014D3B1 /* Bazzar */,
 				CD4B28182E7C00BB0014D3B1 /* BazzarTests */,
 				CD4B28222E7C00BB0014D3B1 /* BazzarUITests */,
@@ -139,6 +148,7 @@
 			);
 			fileSystemSynchronizedGroups = (
 				CD4B280A2E7C00B90014D3B1 /* Bazzar */,
+				CDD3D7D52E840CA50049276A /* assets */,
 			);
 			name = Bazzar;
 			packageProductDependencies = (
@@ -254,6 +264,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CDD3D7D42E840C810049276A /* readme.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
