@@ -13,6 +13,7 @@ struct ProfileView: View {
     @State private var showAppleReauthSheet = false
     @State private var showGoogleReauthSheet = false
     @State private var showDeleteConfirmation = false
+    
     var body: some View {
         NavigationStack {
             VStack(spacing: 24) {
@@ -21,36 +22,51 @@ struct ProfileView: View {
                 
                 AvatarView()
                 
-                VStack(spacing: 12) {
-                    ProfileActionRow(title: "Orders", icon: "bag.fill")
-                    ProfileActionRow(title: "Wishlist", icon: "heart.fill")
-                    ProfileActionRow(title: "Addresses", icon: "map.fill")
+                VStack(spacing: 14) {
+                    NavigationLink {
+                        OrdersView()
+                    } label: {
+                        ProfileActionRow(title: "Orders", icon: "bag.fill") {}
+                    }
+                    
+                    NavigationLink {
+                        WishlistView()
+                    } label: {
+                        ProfileActionRow(title: "Wishlist", icon: "heart.fill") {}
+                    }
+                    
+                    NavigationLink {
+                        AddressListView()
+                    } label: {
+                        ProfileActionRow(title: "Addresses", icon: "map.fill") {}
+                    }
                 }
                 .padding(.horizontal)
                 
                 Spacer()
                 
                 DeleteUserButton {
-                               showDeleteConfirmation = true
-                           }
-                           .alert("Are you sure?", isPresented: $showDeleteConfirmation) {
-                               Button("Cancel", role: .cancel) {}
-                               Button("Delete", role: .destructive) {
-                                   Task {
-                                       await handleDelete()
-                                   }
-                               }
-                           } message: {
-                               Text("This will permanently delete your account, all data in Bazzar, and cannot be undone.")
-                           }
+                    showDeleteConfirmation = true
+                }
+                .alert("Are you sure?", isPresented: $showDeleteConfirmation) {
+                    Button("Cancel", role: .cancel) {}
+                    Button("Delete", role: .destructive) {
+                        Task {
+                            await handleDelete()
+                        }
+                    }
+                } message: {
+                    Text("This will permanently delete your account, all data in Bazzar, and cannot be undone.")
+                }
                 
-                Spacer()
-                LogoutButton{
-                    Task{
+             
+                
+                LogoutButton {
+                    Task {
                         await authManager.signOut()
                     }
-                    
                 }
+                Spacer()
             }
             .padding(.vertical, 20)
             .background(Color("backgroundColor").ignoresSafeArea())
@@ -115,6 +131,7 @@ struct ProfileView: View {
         }
     }
 }
+
 // MARK: - Avatar View
 struct AvatarView: View {
     @Query var user: [User]
@@ -127,20 +144,26 @@ struct AvatarView: View {
         VStack(spacing: 12) {
             ZStack {
                 Circle()
-                    .fill(Color("secondaryBackground"))
-                    .frame(width: 100, height: 100)
+                    .fill(LinearGradient(colors: [.orange.opacity(0.8), .pink.opacity(0.6)],
+                                         startPoint: .topLeading,
+                                         endPoint: .bottomTrailing))
+                    .frame(width: 110, height: 110)
+                    .shadow(color: .orange.opacity(0.3), radius: 8, x: 0, y: 4)
+
                 Image(systemName: "person.fill")
-                    .font(.system(size: 40))
-                    .foregroundColor(.blue)
+                    .font(.system(size: 45))
+                    .foregroundColor(.white)
             }
 
             Text(personalInfo.name)
-                .font(.title2)
-                .fontWeight(.bold)
+                .font(.title2.bold())
+                .foregroundStyle(.primary)
+
             Text("Joined \(personalInfo.lastUpdated.formatted(date: .abbreviated, time: .omitted))")
                 .font(.callout)
-                .foregroundColor(.gray)
+                .foregroundStyle(.secondary)
         }
+        .padding(.bottom, 8)
     }
 }
 
@@ -148,22 +171,33 @@ struct AvatarView: View {
 struct ProfileActionRow: View {
     var title: String
     var icon: String
-
+    var action: () -> Void
+    
     var body: some View {
         HStack {
-            Image(systemName: icon)
-                .foregroundColor(.orange)
-                .frame(width: 28)
+            ZStack {
+                Circle()
+                    .fill(Color.orange.opacity(0.15))
+                    .frame(width: 36, height: 36)
+                Image(systemName: icon)
+                    .foregroundColor(.orange)
+            }
+
             Text(title)
                 .foregroundColor(.primary)
-                .fontWeight(.medium)
+                .font(.system(size: 16, weight: .semibold))
+
             Spacer()
+
             Image(systemName: "chevron.right")
-                .foregroundColor(.gray)
+                .foregroundColor(.gray.opacity(0.6))
         }
         .padding()
-        .background(Color("secondaryBackground"))
-        .cornerRadius(12)
+        .background(
+            RoundedRectangle(cornerRadius: 14)
+                .fill(Color("secondaryBackground"))
+                .shadow(color: .black.opacity(0.05), radius: 4, x: 0, y: 2)
+        )
     }
 }
 
@@ -173,40 +207,65 @@ struct LogoutButton: View {
 
     var body: some View {
         Button(action: action) {
-            HStack {
-                Image(systemName: "power")
-                    .foregroundColor(.red)
+            HStack(spacing: 12) {
+                ZStack {
+                    Circle()
+                        .fill(Color.red.opacity(0.15))
+                        .frame(width: 36, height: 36)
+                    Image(systemName: "power")
+                        .foregroundColor(.red)
+                }
+
                 Text("Logout")
+                    .font(.system(size: 16, weight: .semibold))
                     .foregroundColor(.red)
-                    .bold()
+
                 Spacer()
             }
             .padding()
-            .background(Color("secondaryBackground"))
-            .cornerRadius(12)
+            .background(
+                RoundedRectangle(cornerRadius: 16)
+                    .fill(.white)
+                   
+            )
         }
+        .padding(.horizontal)
     }
 }
+
+// MARK: - Delete Button
 struct DeleteUserButton: View {
     var action: () -> Void
 
     var body: some View {
         Button(action: action) {
-            HStack {
-                Image(systemName: "trash")
-                    .foregroundColor(.red)
+            HStack(spacing: 12) {
+                ZStack {
+                    Circle()
+                        .fill(Color.red.opacity(0.15))
+                        .frame(width: 36, height: 36)
+                    Image(systemName: "trash.fill")
+                        .foregroundColor(.red)
+                }
+
                 Text("Delete Account")
+                    .font(.system(size: 16, weight: .semibold))
                     .foregroundColor(.red)
-                    .bold()
+
                 Spacer()
             }
             .padding()
-            .background(Color("secondaryBackground"))
-            .cornerRadius(12)
+            .background(
+                RoundedRectangle(cornerRadius: 16)
+                    .fill(.white)
+                  
+            )
         }
+        .padding(.horizontal)
     }
 }
 
+// MARK: - Reauth Apple
 struct AppleReauthView: View {
     var completion: (AuthCredential) -> Void
     
@@ -225,7 +284,7 @@ struct AppleReauthView: View {
                        let tokenString = String(data: tokenData, encoding: .utf8) {
                         let firebaseCredential = OAuthProvider.appleCredential(
                             withIDToken: tokenString,
-                            rawNonce: "", // use nonce if you used during login
+                            rawNonce: "",
                             fullName: credential.fullName
                         )
                         completion(firebaseCredential)
@@ -242,6 +301,7 @@ struct AppleReauthView: View {
     }
 }
 
+// MARK: - Reauth Google
 struct GoogleReauthView: View {
     var completion: (AuthCredential) -> Void
     
@@ -265,6 +325,7 @@ struct GoogleReauthView: View {
         .cornerRadius(10)
     }
 }
+
 #Preview {
     ProfileView()
 }

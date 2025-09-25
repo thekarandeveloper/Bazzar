@@ -19,7 +19,9 @@ struct WishlistView: View {
        
         ScrollView {
             if wishlistManager.items.isEmpty {
+             
                 VStack(spacing: 12) {
+                    Spacer()
                     Image(systemName: "heart")
                         .resizable()
                         .scaledToFit()
@@ -28,6 +30,7 @@ struct WishlistView: View {
                     Text("Your wishlist is empty")
                         .font(.headline)
                         .foregroundColor(.gray)
+                    Spacer()
                 }.frame(maxHeight: .infinity)
                 .padding()
             } else {
