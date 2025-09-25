@@ -9,7 +9,7 @@ struct ProductView: View {
     @EnvironmentObject var cartManager: CartManager
     @EnvironmentObject var wishListManager: WishlistManager
     @EnvironmentObject var orderManager: OrderManager
-    
+    @State private var selectedSize: String? = nil
     var product: Product
     
     var body: some View {
@@ -91,7 +91,7 @@ struct ProductView: View {
                                 .padding(.top)
                             Spacer()
                             
-                            Text("\(product.price)")
+                            Text("\(product.price, specifier: "%.2f")" )
                                 .font(.title2)
                                 .fontWeight(.bold)
                                 .padding(.top)
@@ -106,20 +106,21 @@ struct ProductView: View {
                             Text("Select Size")
                                 .font(.caption)
                             HStack(spacing: 12) {
-                                ForEach(["S", "M", "L", "XL", "XXL"], id: \.self) { size in
-                                    Button(action: {
-                                        print("\(size) selected")
-                                    }) {
-                                        Text(size)
-                                            .font(.caption)
-                                            .fontWeight(.medium)
-                                            .frame(width: 40, height: 30)
-                                            .background(Color.gray.opacity(0.2))
-                                            .foregroundColor(.black)
-                                            .cornerRadius(6)
-                                    }
-                                }
-                            }
+                                     ForEach(["S", "M", "L", "XL", "XXL"], id: \.self) { size in
+                                         Button(action: {
+                                             selectedSize = size
+                                             print("\(size) selected")
+                                         }) {
+                                             Text(size)
+                                                 .font(.caption)
+                                                 .fontWeight(.medium)
+                                                 .frame(width: 40, height: 30)
+                                                 .background(selectedSize == size ? Color.blue : Color.gray.opacity(0.2))
+                                                 .foregroundColor(selectedSize == size ? .white : .black)
+                                                 .cornerRadius(6)
+                                         }
+                                     }
+                                 }
                         }
                         Spacer()
                         VStack(alignment: .trailing, spacing: 8) {

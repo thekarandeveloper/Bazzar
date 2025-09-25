@@ -56,18 +56,16 @@ struct SelectAddressView: View {
                 if let selected = selectedAddressID {
                    
                     if inCart{
-                       
+                       print("is in cart", inCart)
                         DispatchQueue.main.async {
                             
-                            razorpayManager.startPayment(amount: 24, productName: "Cart")
+                            razorpayManager.startPayment(amount: cartManager.totalAmount(), productName: "Cart")
                         }
-                    } else{
-                        
+                    } else {
+                        print("is in cart", inCart)
                         DispatchQueue.main.async {
                             razorpayManager.startPayment(amount: product.price, productName: "\(product.name)")
                         }
-                       
-                        
                     }
                   
                 } else {
