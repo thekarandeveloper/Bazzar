@@ -19,10 +19,18 @@ Bazzar is an iOS shopping app designed to provide users with a seamless local ma
 
 ## Screenshots
 
-| Home Screen | Product Page | Cart |
-|------------|--------------|------|
-| ![Home](assets/home.png) | ![Product Page](assets/product.png) | ![Cart](assets/cart.png) |
-
+<table>
+  <tr>
+    <th>Home Screen</th>
+    <th>Product Page</th>
+    <th>Cart</th>
+  </tr>
+  <tr>
+    <td><img src="assets/home.png" width="300"/></td>
+    <td><img src="assets/product.png" width="300"/></td>
+    <td><img src="assets/cart.png" width="300"/></td>
+  </tr>
+</table>
 
 ---
 
