@@ -19,16 +19,15 @@ class AuthenticationManager: ObservableObject {
     
     @Published var isAuthenticated: Bool = false
     @Published var currentUser: FirebaseAuth.User? = nil
-    // New property to track which service was used
-       @Published var signInMethod: SignInMethod? = nil
+    @Published var signInMethod: SignInMethod? = nil
     @State private var currentNonce: String? = nil
     
-       
-       enum SignInMethod: String {
-           case google
-           case apple
-       }
-init() {
+    enum SignInMethod: String {
+        case google
+        case apple
+    }
+    
+    init() {
         self.currentUser = Auth.auth().currentUser
         self.isAuthenticated = currentUser != nil
         self.signInMethod = nil
@@ -55,9 +54,10 @@ init() {
             self.currentUser = result.user
             self.isAuthenticated = true
             self.signInMethod = .google
-            print("Google sign-in successful: \(result.user.uid)")
+            print("✅ Google sign-in successful: \(result.user.uid)")
         } catch {
-            print("Google sign-in failed: \(error.localizedDescription)")
+            print("❌ Google sign-in failed: \(error.localizedDescription)")
+            self.isAuthenticated = false
         }
     }
     
@@ -65,7 +65,7 @@ init() {
     func signInWithApple(credential: ASAuthorizationAppleIDCredential, nonce: String) async {
         guard let identityToken = credential.identityToken,
               let tokenString = String(data: identityToken, encoding: .utf8) else {
-            print("Unable to fetch identity token")
+            print("❌ Unable to fetch identity token")
             return
         }
         
@@ -80,69 +80,69 @@ init() {
             self.currentUser = result.user
             self.isAuthenticated = true
             self.signInMethod = .apple
-            print("Apple sign-in successful: \(result.user.uid)")
+            print("✅ Apple sign-in successful: \(result.user.uid)")
         } catch {
-            print("Apple sign-in failed: \(error.localizedDescription)")
+            print("❌ Apple sign-in failed: \(error.localizedDescription)")
+            self.isAuthenticated = false
         }
     }
     
-    //MARK: - Manager
-    
+    // MARK: - Manager
     func getGoogleCredential() async throws -> AuthCredential {
-            guard let clientID = FirebaseApp.app()?.options.clientID else {
-                throw NSError(domain: "GoogleSignIn", code: 1, userInfo: [NSLocalizedDescriptionKey: "Missing clientID"])
+        guard let clientID = FirebaseApp.app()?.options.clientID else {
+            throw NSError(domain: "GoogleSignIn", code: 1, userInfo: [NSLocalizedDescriptionKey: "Missing clientID"])
+        }
+        let config = GIDConfiguration(clientID: clientID)
+        
+        return try await withCheckedThrowingContinuation { continuation in
+            guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+                  let rootVC = windowScene.windows.first?.rootViewController else {
+                continuation.resume(throwing: NSError(domain: "GoogleSignIn", code: 2, userInfo: [NSLocalizedDescriptionKey: "No root view controller"]))
+                return
             }
-            let config = GIDConfiguration(clientID: clientID)
             
-            return try await withCheckedThrowingContinuation { continuation in
-                guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-                      let rootVC = windowScene.windows.first?.rootViewController else {
-                    continuation.resume(throwing: NSError(domain: "GoogleSignIn", code: 2, userInfo: [NSLocalizedDescriptionKey: "No root view controller"]))
+            GIDSignIn.sharedInstance.signIn(withPresenting: rootVC, hint: nil) { result, error in
+                if let error = error {
+                    continuation.resume(throwing: error)
                     return
                 }
                 
-                GIDSignIn.sharedInstance.signIn(withPresenting: rootVC, hint: nil) { result, error in
-                    if let error = error {
-                        continuation.resume(throwing: error)
-                        return
-                    }
-                    
-                    guard let user = result?.user,
-                          let idToken = user.idToken?.tokenString else {
-                        continuation.resume(throwing: NSError(domain: "GoogleSignIn", code: 3, userInfo: nil))
-                        return
-                    }
-                    
-                    let accessToken = user.accessToken.tokenString
-                    let credential = GoogleAuthProvider.credential(withIDToken: idToken, accessToken: accessToken)
-                    continuation.resume(returning: credential)
+                guard let user = result?.user,
+                      let idToken = user.idToken?.tokenString else {
+                    continuation.resume(throwing: NSError(domain: "GoogleSignIn", code: 3, userInfo: nil))
+                    return
                 }
+                
+                let accessToken = user.accessToken.tokenString
+                let credential = GoogleAuthProvider.credential(withIDToken: idToken, accessToken: accessToken)
+                continuation.resume(returning: credential)
             }
         }
+    }
 
-        // MARK: - Get fresh Apple credential
+    // MARK: - Get fresh Apple credential
     private var lastAppleCredential: OAuthCredential? = nil
         
-        func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
-            if let appleIDCredential = authorization.credential as? ASAuthorizationAppleIDCredential {
-                guard let identityToken = appleIDCredential.identityToken,
-                      let tokenString = String(data: identityToken, encoding: .utf8) else { return }
-                
-                let credential = OAuthProvider.appleCredential(
-                    withIDToken: tokenString,
-                    rawNonce: currentNonce ?? "",
-                    fullName: appleIDCredential.fullName
-                )
-                lastAppleCredential = credential
-            }
+    func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
+        if let appleIDCredential = authorization.credential as? ASAuthorizationAppleIDCredential {
+            guard let identityToken = appleIDCredential.identityToken,
+                  let tokenString = String(data: identityToken, encoding: .utf8) else { return }
+            
+            let credential = OAuthProvider.appleCredential(
+                withIDToken: tokenString,
+                rawNonce: currentNonce ?? "",
+                fullName: appleIDCredential.fullName
+            )
+            lastAppleCredential = credential
         }
+    }
 
-        func getAppleCredential() async throws -> AuthCredential {
-            guard let credential = lastAppleCredential else {
-                throw NSError(domain: "AppleSignIn", code: 1, userInfo: [NSLocalizedDescriptionKey: "Apple reauth requires user interaction"])
-            }
-            return credential
+    func getAppleCredential() async throws -> AuthCredential {
+        guard let credential = lastAppleCredential else {
+            throw NSError(domain: "AppleSignIn", code: 1, userInfo: [NSLocalizedDescriptionKey: "Apple reauth requires user interaction"])
         }
+        return credential
+    }
     
     // MARK: - Sign out
     func signOut() async {
@@ -158,7 +158,7 @@ init() {
             UserDefaults.standard.removeObject(forKey: "isDarkMode")
             UserDefaults.standard.removeObject(forKey: "notificationsEnabled")
             UserDefaults.standard.removeObject(forKey: "hasSkippedOnboarding")
-            
+            UserDefaults.standard.removeObject(forKey: "hasCompletedOnboarding")
             
             print("✅ User signed out and local state cleared")
         } catch {
