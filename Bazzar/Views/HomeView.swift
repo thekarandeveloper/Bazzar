@@ -14,7 +14,6 @@ struct HomeView: View{
         GridItem(.flexible()),
         GridItem(.flexible())
     ]
-    
     var body: some View{
        
         ScrollView(.vertical, showsIndicators: false){

@@ -11,15 +11,20 @@ import SwiftData
 
 struct SelectAddressView: View {
     @Environment(\.dismiss) private var dismiss
-    @Query(sort: \Address.createdAt, order: .reverse) private var savedAddresses: [Address]
-    @State private var selectedAddressID: String? = nil
     @EnvironmentObject var cartManager: CartManager
+    @EnvironmentObject var orderManager: OrderManager
+    @EnvironmentObject var authManager: AuthenticationManager
+    @Query(sort: \Address.createdAt, order: .reverse) private var savedAddresses: [Address]
+    
+    @State private var selectedAddressID: String? = nil
     @State private var showAlert = false
+    @State private var showAddAddressSheet = false
+    @State private var showAuthSheet = false
     @State var inCart = false
     @StateObject private var razorpayManager = RazorpayManager()
-    @EnvironmentObject var orderManager: OrderManager
     
     var product: Product
+    
     var body: some View {
         VStack {
             if savedAddresses.isEmpty {
@@ -39,37 +44,25 @@ struct SelectAddressView: View {
                 ScrollView {
                     VStack(spacing: 16) {
                         ForEach(savedAddresses) { address in
-                            AddressCard(address: address,
-                                        isSelected: selectedAddressID == address.id)
-                                .onTapGesture {
-                                    selectedAddressID = address.id
-                                }
+                            AddressCard(address: address, isSelected: selectedAddressID == address.id)
+                                .onTapGesture { selectedAddressID = address.id }
                         }
                     }
                     .padding()
                 }
             }
-            
-            // Proceed Button
-         
+
             Button(action: {
-                if let selected = selectedAddressID {
-                   
-                    if inCart{
-                       print("is in cart", inCart)
-                        DispatchQueue.main.async {
-                            
-                            razorpayManager.startPayment(amount: cartManager.totalAmount(), productName: "Cart")
-                        }
-                    } else {
-                        print("is in cart", inCart)
-                        DispatchQueue.main.async {
-                            razorpayManager.startPayment(amount: product.price, productName: "\(product.name)")
-                        }
-                    }
-                  
-                } else {
+                guard selectedAddressID != nil else {
                     showAlert = true
+                    return
+                }
+                
+                // Check authentication
+                if authManager.isAuthenticated {
+                    startPayment()
+                } else {
+                    showAuthSheet = true
                 }
             }) {
                 Text("Proceed to Payment")
@@ -85,7 +78,27 @@ struct SelectAddressView: View {
             }
             .padding()
             .disabled(selectedAddressID == nil)
-        }.navigationDestination(isPresented: Binding(
+        }
+        .navigationTitle("Select Address")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button(action: { showAddAddressSheet = true }) {
+                    HStack {
+                        Image(systemName: "plus.circle.fill")
+                        Text("Add")
+                    }
+                }
+            }
+        }
+        .sheet(isPresented: $showAddAddressSheet) {
+            AddressEntryView()
+        }
+        .sheet(isPresented: $showAuthSheet) {
+            OnboardingView()
+        }
+        .background(Color("backgroundColor").ignoresSafeArea())
+        .navigationDestination(isPresented: Binding(
             get: {
                 if case .success = razorpayManager.paymentStatus { return true }
                 if case .failure = razorpayManager.paymentStatus { return true }
@@ -93,31 +106,31 @@ struct SelectAddressView: View {
             },
             set: { _ in }
         )) {
-            // Only return a view here
-            Group {
-                switch razorpayManager.paymentStatus {
-                case .success(let id):
-                    PaymentSuccessView(paymentID: id)
-                        .onAppear {
-                            orderManager.addOrder(product: product, amount: product.price, status: .success(paymentID: id))
-                           
-                        }
-
-                case .failure(let error):
-                    PaymentFailureView(errorMessage: error)
-                        .onAppear {
-                            orderManager.addOrder(product: product, amount: product.price, status: .failure(error: error))
-                         
-                        }
-
-                default:
-                    EmptyView()
-                }
+            switch razorpayManager.paymentStatus {
+            case .success(let id):
+                PaymentSuccessView(paymentID: id)
+                    .onAppear {
+                        let amount = inCart ? cartManager.totalAmount() : product.price
+                        orderManager.addOrder(product: product, amount: amount, status: .success(paymentID: id))
+                    }
+            case .failure(let error):
+                PaymentFailureView(errorMessage: error)
+                    .onAppear {
+                        let amount = inCart ? cartManager.totalAmount() : product.price
+                        orderManager.addOrder(product: product, amount: amount, status: .failure(error: error))
+                    }
+            default:
+                EmptyView()
             }
         }
-        .navigationTitle("Select Address")
-        .navigationBarTitleDisplayMode(.inline)
-        .background(Color("backgroundColor").ignoresSafeArea())
+    }
+    
+    private func startPayment() {
+        if inCart {
+            razorpayManager.startPayment(amount: cartManager.totalAmount(), productName: "Cart")
+        } else {
+            razorpayManager.startPayment(amount: product.price, productName: product.name)
+        }
     }
 }
 
@@ -154,7 +167,6 @@ struct AddressCard: View {
         .shadow(color: .black.opacity(0.05), radius: 3, x: 0, y: 2)
     }
 }
-
 struct PaymentSuccessView: View {
     let paymentID: String
     @Environment(\.dismiss) var dismiss

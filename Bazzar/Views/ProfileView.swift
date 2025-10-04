@@ -23,6 +23,7 @@ struct ProfileView: View {
                 AvatarView()
                 
                 VStack(spacing: 14) {
+                    
                     NavigationLink {
                         OrdersView()
                     } label: {
@@ -92,7 +93,7 @@ struct ProfileView: View {
     }
     
     // MARK: - Handle Delete
-    func handleDelete() {
+    func handleDelete() async {
         guard let user = authManager.currentUser else { return }
         
         switch authManager.signInMethod {

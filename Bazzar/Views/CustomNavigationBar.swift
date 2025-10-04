@@ -15,7 +15,8 @@ struct CustomNavigationBarView: View {
     @StateObject private var searchViewModel = SearchViewModel()
     @StateObject var searchManager = SearchManager(products: DataManager.shared.products)
     @EnvironmentObject var wishlistManager: WishlistManager
-    
+    @EnvironmentObject var authManager: AuthenticationManager
+
     var body: some View {
         HStack(spacing: 12) {
             
@@ -79,13 +80,16 @@ struct CustomNavigationBarView: View {
                 }
                
         }
-        .sheet(isPresented: $goToProfile){
+        .sheet(isPresented: $goToProfile) {
             NavigationStack {
+                if authManager.isAuthenticated {
                     ProfileView()
-                    .navigationTitle("Profile")
-                    .navigationBarTitleDisplayMode(.inline)
+                        .navigationTitle("Profile")
+                        .navigationBarTitleDisplayMode(.inline)
+                } else {
+                    OnboardingView()
                 }
-               
+            }
         }
        
     }
@@ -128,25 +132,6 @@ struct SearchBarView: View {
                            isActive: $goToResults) {
                 EmptyView()
             }
-        }
-    }
-}
-// MARK: - Preview
-struct CustomNavigationBarView_Previews: PreviewProvider {
-    static var previews: some View {
-        NavigationStack {
-            CustomNavigationBarView(selectedTab: .home)
-                .environmentObject(CartManager())       // provide dummy CartManager
-                .environmentObject(WishlistManager())   // provide dummy WishlistManager
-        }
-    }
-}
-
-struct SearchBarView_Previews: PreviewProvider {
-    static var previews: some View {
-        NavigationStack {
-            SearchBarView(searchManager: SearchManager(products: DataManager.shared.products))
-                .environmentObject(WishlistManager())   // provide dummy WishlistManager
         }
     }
 }

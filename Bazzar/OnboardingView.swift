@@ -12,12 +12,12 @@ import FirebaseCore
 import GoogleSignIn
 
 struct OnboardingView: View {
-    @Binding var isAuthenticated: Bool
     @State private var currentPage = 0
     @Environment(\.modelContext) private var context
     @EnvironmentObject var authManager: AuthenticationManager
     @State private var currentNonce: String? = nil
-    
+    @AppStorage("hasSkippedOnboarding") private var hasSkippedOnboarding = false
+
     let images = ["First", "Second", "Third"]
 
     let titles = [
@@ -40,7 +40,19 @@ struct OnboardingView: View {
             Color("backgroundColor")
                 .ignoresSafeArea()
             VStack {
-               
+                HStack {
+                       Spacer()
+                    
+                    if !hasSkippedOnboarding{
+                        Button("Skip") {
+                            hasSkippedOnboarding = true
+                           
+                        }
+                        .foregroundColor(.blue)
+                        .padding()
+                    }
+                      
+                   }
                 Spacer().frame(maxHeight: 30)
                 
                 TabView(selection: $currentPage){

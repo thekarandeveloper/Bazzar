@@ -15,7 +15,6 @@ struct CategoryView: View {
     let columns = Array(repeating: GridItem(.flexible(), spacing: 12), count: 3)
     
     let allProducts: [Product] = DataManager.shared.products
-    
     var body: some View {
         ZStack {
             Color("backgroundColor")
@@ -78,9 +77,4 @@ struct CategoryCardView: View {
         .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
         .shadow(color: .black.opacity(0.05), radius: 3, x: 0, y: 2)
     }
-}
-#Preview {
-    CategoryView()
-        .environmentObject(CartManager())
-        .environmentObject(WishlistManager())
 }
