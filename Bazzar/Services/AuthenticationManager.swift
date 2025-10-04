@@ -10,6 +10,7 @@ import FirebaseAuth
 import GoogleSignIn
 import AuthenticationServices
 import FirebaseCore
+import SwiftData
 
 @MainActor
 class AuthenticationManager: ObservableObject {
@@ -146,12 +147,22 @@ init() {
     // MARK: - Sign out
     func signOut() async {
         do {
+            // Firebase Sign Out
             try Auth.auth().signOut()
             self.currentUser = nil
             self.isAuthenticated = false
-            self.signInMethod = .google
+            self.signInMethod = nil
+            
+            // Reset UserDefaults
+            UserDefaults.standard.removeObject(forKey: "selectedCurrency")
+            UserDefaults.standard.removeObject(forKey: "isDarkMode")
+            UserDefaults.standard.removeObject(forKey: "notificationsEnabled")
+            UserDefaults.standard.removeObject(forKey: "hasSkippedOnboarding")
+            
+            
+            print("✅ User signed out and local state cleared")
         } catch {
-            print("Sign-out error: \(error.localizedDescription)")
+            print("❌ Sign-out error: \(error.localizedDescription)")
         }
     }
 }
