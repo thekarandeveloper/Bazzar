@@ -19,6 +19,10 @@ struct OnboardingView: View {
     @State private var currentNonce: String? = nil
     @AppStorage("hasSkippedOnboarding") private var hasSkippedOnboarding = false
     @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding = false
+    
+    // Loading states
+    @State private var isAppleSignInLoading = false
+    @State private var isGoogleSignInLoading = false
 
     let images = ["First", "Second", "Third"]
 
@@ -44,13 +48,16 @@ struct OnboardingView: View {
             VStack {
                 HStack {
                     Spacer()
-                    
-                    Button("Skip") {
-                        hasSkippedOnboarding = true
-                        dismiss()
+                    if hasSkippedOnboarding == true{
+                        Button("Skip") {
+                            hasSkippedOnboarding = true
+                            dismiss()
+                        }
+                        .foregroundColor(.blue)
+                        .padding()
+                        .disabled(isAppleSignInLoading || isGoogleSignInLoading)
                     }
-                    .foregroundColor(.blue)
-                    .padding()
+                   
                 }
                 
                 Spacer().frame(maxHeight: 30)
@@ -108,60 +115,96 @@ struct OnboardingView: View {
                 
                 Spacer().frame(maxHeight: 60)
                 
-                // Apple Sign In Button
-                SignInWithAppleButton(.signIn) { request in
-                    let nonce = randomNonceString()
-                    currentNonce = nonce
-                    request.requestedScopes = [.fullName, .email]
-                    request.nonce = sha256(nonce)
-                } onCompletion: { result in
-                    switch result {
-                    case .success(let authResults):
-                        if let credential = authResults.credential as? ASAuthorizationAppleIDCredential,
-                           let nonce = currentNonce {
-                            Task {
-                                await authManager.signInWithApple(credential: credential, nonce: nonce)
-                                if authManager.isAuthenticated {
-                                    await createUserIfNeeded()
-                                    hasCompletedOnboarding = true
-                                    dismiss()
+                // Apple Sign In Button with Loading
+                ZStack {
+                    SignInWithAppleButton(.signIn) { request in
+                        let nonce = randomNonceString()
+                        currentNonce = nonce
+                        request.requestedScopes = [.fullName, .email]
+                        request.nonce = sha256(nonce)
+                    } onCompletion: { result in
+                        isAppleSignInLoading = true
+                        
+                        switch result {
+                        case .success(let authResults):
+                            if let credential = authResults.credential as? ASAuthorizationAppleIDCredential,
+                               let nonce = currentNonce {
+                                Task {
+                                    await authManager.signInWithApple(credential: credential, nonce: nonce)
+                                    
+                                    if authManager.isAuthenticated {
+                                        await createUserIfNeeded()
+                                        hasCompletedOnboarding = true
+                                        dismiss()
+                                    } else {
+                                        // Authentication failed, reset loading
+                                        isAppleSignInLoading = false
+                                    }
                                 }
+                            } else {
+                                isAppleSignInLoading = false
                             }
+                        case .failure(let error):
+                            print("Apple Sign-In failed: \(error.localizedDescription)")
+                            isAppleSignInLoading = false
                         }
-                    case .failure(let error):
-                        print("Apple Sign-In failed: \(error.localizedDescription)")
+                    }
+                    .signInWithAppleButtonStyle(.black)
+                    .frame(height: 50)
+                    .frame(maxWidth: .infinity)
+                    .opacity(isAppleSignInLoading ? 0.6 : 1.0)
+                    .disabled(isAppleSignInLoading || isGoogleSignInLoading)
+                    
+                    if isAppleSignInLoading {
+                        ProgressView()
+                            .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                            .scaleEffect(1.2)
                     }
                 }
-                .signInWithAppleButtonStyle(.black)
-                .frame(height: 50)
-                .frame(maxWidth: .infinity)
                 .padding(.horizontal, 20)
                 
-                // Google Sign In
+                // Google Sign In Button with Loading
                 Button {
+                    isGoogleSignInLoading = true
+                    
                     Task {
                         await authManager.signInWithGoogle()
+                        
                         if authManager.isAuthenticated {
                             await createUserIfNeeded()
                             hasCompletedOnboarding = true
                             dismiss()
+                        } else {
+                            // Authentication failed, reset loading
+                            isGoogleSignInLoading = false
                         }
                     }
                 } label: {
-                    HStack {
-                        Image("googleLogo")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 30, height: 30, alignment: .center)
-                            .foregroundColor(.red)
-                            .font(.title2)
+                    ZStack {
+                        HStack {
+                            if !isGoogleSignInLoading {
+                                Image("googleLogo")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 30, height: 30, alignment: .center)
+                                    .foregroundColor(.red)
+                                    .font(.title2)
+                            }
+                            
+                            Text(isGoogleSignInLoading ? "Signing in..." : "Sign in with Google")
+                                .font(.headline)
+                                .foregroundColor(.black)
+                        }
+                        .frame(maxWidth: .infinity, maxHeight: 22)
+                        .padding()
+                        .opacity(isGoogleSignInLoading ? 0 : 1)
                         
-                        Text("Sign in with Google")
-                            .font(.headline)
-                            .foregroundColor(.black)
+                        if isGoogleSignInLoading {
+                            ProgressView()
+                                .progressViewStyle(CircularProgressViewStyle(tint: .black))
+                                .scaleEffect(1.2)
+                        }
                     }
-                    .frame(maxWidth: .infinity, maxHeight: 22)
-                    .padding()
                     .background(Color.white)
                     .overlay(
                         RoundedRectangle(cornerRadius: 10, style: .continuous)
@@ -169,6 +212,8 @@ struct OnboardingView: View {
                     )
                     .cornerRadius(10)
                 }
+                .disabled(isAppleSignInLoading || isGoogleSignInLoading)
+                .opacity((isAppleSignInLoading || isGoogleSignInLoading) ? 0.6 : 1.0)
                 .padding(.horizontal, 20)
             }
         }

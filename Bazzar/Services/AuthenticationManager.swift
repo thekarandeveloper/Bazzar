@@ -147,18 +147,20 @@ class AuthenticationManager: ObservableObject {
     // MARK: - Sign out
     func signOut() async {
         do {
-            // Firebase Sign Out
+            // 1️⃣ Firebase Sign Out
             try Auth.auth().signOut()
+            
+            // 2️⃣ Reset local authentication state
             self.currentUser = nil
             self.isAuthenticated = false
             self.signInMethod = nil
             
-            // Reset UserDefaults
-            UserDefaults.standard.removeObject(forKey: "selectedCurrency")
-            UserDefaults.standard.removeObject(forKey: "isDarkMode")
-            UserDefaults.standard.removeObject(forKey: "notificationsEnabled")
-            UserDefaults.standard.removeObject(forKey: "hasSkippedOnboarding")
-            UserDefaults.standard.removeObject(forKey: "hasCompletedOnboarding")
+            // 3️⃣ Clear stored user preferences
+            let defaults = UserDefaults.standard
+            defaults.removeObject(forKey: "selectedCurrency")
+            defaults.removeObject(forKey: "isDarkMode")
+            defaults.removeObject(forKey: "notificationsEnabled")
+            defaults.set(false, forKey: "hasSkippedOnboarding") // set false instead of removing
             
             print("✅ User signed out and local state cleared")
         } catch {
