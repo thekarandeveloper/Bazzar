@@ -36,6 +36,10 @@ class OrderManager: ObservableObject {
         orders.removeAll()
     }
     func isProductOrdered(product: Product) -> Bool {
-            return orders.contains { $0.product.id == product.id }
+        return orders.contains { order in
+            order.product.id == product.id && {
+                if case .success = order.status { true } else { false }
+            }()
         }
+    }
 }
